@@ -20,7 +20,7 @@ class Player:
     def __init__(self, id, points=0):
         self._id = id
         self._points = points
-        self._occupied = []
+        self._occupied= []
 
     def id(self):
         return self._id
@@ -58,10 +58,10 @@ class Point:
     def coord(self):
         return self._coords
 
-    def psbl_mov(self):
+    def posbl_mov(self):
         return self._posbl_mov
 
-    def sumbol(self):
+    def symbol(self):
         if not self._taken:
             return []
         else:
