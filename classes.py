@@ -13,6 +13,18 @@ class PointOccupiedError(Exception):
     pass
 
 
+class ImpossibleMove(Exception):
+    pass
+
+
+class FreePointError(Exception):
+    pass
+
+
+class PointOwnerError(Exception):
+    pass
+
+
 class Player:
     """ attributes:
 
@@ -22,9 +34,9 @@ class Player:
         methods:
 
         place a piece
-        occupied intersections
+        # occupied intersections
         move a piece
-        remove an opponent's piece
+        # remove an opponent's piece
         fly a piece
 
         """
@@ -44,6 +56,29 @@ class Player:
     def place_piece(self, point: "Point"):
         self._occupied.append(point)
         point.set_owner(self)
+
+    def move_piece(self, point1: "Point", point2: "Point"):
+        # chceck if a point belongs to player,
+        # if a move is possible
+        # move point
+        if point1.owner() == self:
+            if point1.coord() in point2.posbl_mov():
+                point1.remove_owner()
+                self.place_piece(point2)
+            else:
+                raise ImpossibleMove("These points are not connected.")
+        else:
+            raise ImpossibleMove("This piece doesn't belong to this player.")
+
+    def fly_piece(self, point1: "Point", point2: "Point"):
+        point1.remove_owner()
+        point2.set_owner(self)
+
+    def remove_opponents_piece(self, piece):
+        if piece in self.occupied():
+            raise PointOwnerError("You can only remove an oponent's piece")
+        else:
+            piece.remove_owner()
 
 
 class Point:
@@ -85,12 +120,20 @@ class Point:
     def owner(self):
         return self._owner
 
-    def set_owner(self, player: "Player"):
+    def set_owner(self, player: "Player" = None):
         if not self._taken:
             self._owner = player
             self._taken = True
         else:
-            raise PointOccupiedError("this point is already occupied")
+            raise PointOccupiedError("This point is already occupied.")
+
+    def remove_owner(self):
+        if self._owner:
+            self._owner = None
+            self._taken = False
+        else:
+            raise FreePointError("Cannot remove a piece from this point")
+# needs test
 
 
 class Board:
@@ -131,8 +174,9 @@ class Board:
                              Point((6, 3), [(6, 0), (5, 3), (6, 6)]),
                              Point((6, 6), [(6, 3), (5, 5), (3, 6)])
                              ]
-        self._board = [[[], "_", "_", [], "_", "_", []],
-                       ["_", [], "_", [], "_", [], "_"],
+# board may have "_" on every place
+        self._board = [[[], "_", "_", "_", "_", "_", []],
+                       ["_", "_", "_", [], "_", [], "_"],
                        ["_", "_", [], [], [], "_", "_"],
                        [[], [], [], "_", [], [], []],
                        ["_", "_", [], [], [], "_", "_"],
@@ -152,9 +196,9 @@ class Board:
 
     def get_point(self, coord: tuple):
         if not type(coord) == tuple:
-            raise IncorrectCoordsError("Coords must be a tuple")
+            raise IncorrectCoordsError("Coords must be a tuple.")
         if not len(coord) == 2:
-            raise IncorrectCoordsError("Coords must have 2 values x and y")
+            raise IncorrectCoordsError("Coords must have 2 values x and y.")
         if coord not in self._points_coord_dict:
-            raise CoordsOfNotActivePoint("This point is not an active point")
+            raise CoordsOfNotActivePoint("This point is not an active point.")
         return self._points_coord_dict[coord]
