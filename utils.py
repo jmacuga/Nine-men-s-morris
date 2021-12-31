@@ -13,13 +13,15 @@ def find_mills(player: "Player"):
         for point2 in player.occupied():
             if point1.coord() in point2.posbl_mov():
                 connect_list.append(point2)
-        if len(connect_list) == 2:
+        if len(connect_list) >= 2:
             for i in range(2):
+                coords_match = []
                 for point in connect_list:
-                    if not point.coord()[i] == point1.coord()[i]:
-                        break
-                connect_list.append(point1)
-                mills.append(connect_list)
+                    if point.coord()[i] == point1.coord()[i]:
+                        coords_match.append(point)
+                if len(coords_match) == 2:
+                    coords_match.append(point1)
+                    mills.append(coords_match)
     return mills
 
 
