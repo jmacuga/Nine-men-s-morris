@@ -25,6 +25,10 @@ class PointOwnerError(Exception):
     pass
 
 
+class PointInMillError(Exception):
+    pass
+
+
 class Player:
     """ attributes:
 
@@ -45,7 +49,8 @@ class Player:
         self._id = id
         self._points = points
         self._occupied = []
-    # occupied list may be redundant
+# points may be redundant - winner is player who removes
+# opponents pieces to two or opponent cannot make legal move
 
     def id(self):
         return self._id
@@ -77,6 +82,8 @@ class Player:
     def remove_opponents_piece(self, piece):
         if piece in self.occupied():
             raise PointOwnerError("You can only remove an oponent's piece")
+        if piece.locked():
+            raise PointInMillError("This point is in mill")
         else:
             piece.remove_owner()
 
@@ -97,11 +104,12 @@ class Point:
 
         """
 
-    def __init__(self, coordinates: tuple, posbl_mov: list, taken: bool = False, owner: 'Player' = None):
+    def __init__(self, coordinates: tuple, posbl_mov: list, taken: bool = False, owner: 'Player' = None, locked=False):
         self._coords = coordinates
         self._posbl_mov = posbl_mov
         self._taken = taken
         self._owner = owner if owner else None
+        self._locked = locked
 
     def coord(self):
         return self._coords
@@ -131,9 +139,13 @@ class Point:
         if self._owner:
             self._owner = None
             self._taken = False
+            self._locked = False
         else:
             raise FreePointError("Cannot remove a piece from this point")
-# needs test
+# needs test --
+
+    def locked(self):
+        return self._locked
 
 
 class Board:

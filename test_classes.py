@@ -177,3 +177,4 @@ def test_fly_piece():
     player1.fly_piece(point00, point66)
     assert point00.owner() == None
     assert point66.owner() == player1
+

@@ -22,8 +22,9 @@ def find_mills(player: "Player"):
                 if len(coords_match) == 2:
                     coords_match.append(point1)
                     mills.append(coords_match)
+                    for point in coords_match:
+                        point._locked = True
     return mills
 
 
 """lock mills"""
-"""mill"""
