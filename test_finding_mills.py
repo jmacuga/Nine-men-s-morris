@@ -1,5 +1,4 @@
-from classes import Player, Point, Board, PointInMillError
-import utils
+from classes import Player, Board, PointInMillError
 import pytest
 
 
@@ -29,7 +28,6 @@ def test_find_mills():
     point55 = board.get_point((5, 5))
     point43 = board.get_point((4, 3))
     point44 = board.get_point((4, 4))
-    point63 = board.get_point((6, 3))
     player1 = Player(1)
     player1.place_piece(point51)
     player1.place_piece(point53)
