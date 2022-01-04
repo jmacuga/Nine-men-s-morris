@@ -168,6 +168,17 @@ def test_move_impossible_move_piece_not_owned():
         player1.move_piece(point00, point11)
 
 
+def test_remove_owner():
+    board = Board()
+    point00 = board.get_point((0, 0))
+    player1 = Player(1)
+    player1.place_piece(point00)
+    point00.remove_owner()
+    assert point00.owner() == None
+    assert player1.occupied() == []
+    assert point00.taken() == False
+
+
 def test_fly_piece():
     board = Board()
     point00 = board.get_point((0, 0))
@@ -177,4 +188,3 @@ def test_fly_piece():
     player1.fly_piece(point00, point66)
     assert point00.owner() == None
     assert point66.owner() == player1
-

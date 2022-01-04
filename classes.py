@@ -1,6 +1,5 @@
 from tabulate import tabulate
 
-
 class IncorrectCoordsError(Exception):
     pass
 
@@ -28,6 +27,28 @@ class PointOwnerError(Exception):
 class PointInMillError(Exception):
     pass
 
+def find_mills(player: "Player"):
+    # """find all mills
+    # check
+    # -if at least 3 points in player's points are connected
+    # -if connected points are in the same line
+
+    # returns list of mills
+    # """
+    mills = []
+    for point1 in player.occupied():
+        connect_list = [point2 for point2 in player.occupied(
+        ) if point1.coord() in point2.posbl_mov()]
+        if len(connect_list) >= 2:
+            for i in range(2):
+                coords_match = [point for point in connect_list if point.coord()[
+                    i] == point1.coord()[i]]
+                if len(coords_match) == 2:
+                    coords_match.append(point1)
+                    mills.append(coords_match)
+                    for point in coords_match:
+                        point._locked = True
+    return mills
 
 class Player:
     """ attributes:
@@ -128,6 +149,19 @@ class Point:
     def owner(self):
         return self._owner
 
+    def locked(self):
+        return self._locked
+
+    def unlock(self):
+        mills = find_mills(self._owner)
+        for mill in mills:
+            if self in mill:
+                for point in mill:
+                    point._locked = False
+
+    def taken(self):
+        return self._taken
+
     def set_owner(self, player: "Player" = None):
         if not self._taken:
             self._owner = player
@@ -137,15 +171,14 @@ class Point:
 
     def remove_owner(self):
         if self._owner:
+            if self._locked:
+                self.unlock()
+            self._owner._occupied.remove(self)
             self._owner = None
             self._taken = False
-            self._locked = False
         else:
             raise FreePointError("Cannot remove a piece from this point")
 # needs test --
-
-    def locked(self):
-        return self._locked
 
 
 class Board:
