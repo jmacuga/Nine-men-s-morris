@@ -6,8 +6,6 @@ def test_player_class():
     player1 = Player(1)
     player2 = Player(2)
     assert player1.id() == 1
-    assert player1._points == 0
-    assert player2._points == 0
     assert player2._occupied == []
 
 
@@ -185,6 +183,6 @@ def test_fly_piece():
     point66 = board.get_point((6, 6))
     player1 = Player(1)
     player1.place_piece(point00)
-    player1.fly_piece(point00, point66)
+    player1.move_piece(point00, point66, True)
     assert point00.owner() == None
     assert point66.owner() == player1

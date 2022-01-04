@@ -69,22 +69,18 @@ class Player:
         self._occupied.append(point)
         point.set_owner(self)
 
-    def move_piece(self, point1: "Point", point2: "Point"):
+    def move_piece(self, point1: "Point", point2: "Point", fly=False):
         # chceck if a point belongs to player,
         # if a move is possible
         # move point
         if point1.owner() == self:
-            if point1.coord() in point2.posbl_mov():
+            if point1.coord() in point2.posbl_mov() or fly:
                 point1.remove_owner()
                 self.place_piece(point2)
             else:
                 raise ImpossibleMove("These points are not connected.")
         else:
             raise ImpossibleMove("This piece doesn't belong to this player.")
-
-    def fly_piece(self, point1: "Point", point2: "Point"):
-        point1.remove_owner()
-        point2.set_owner(self)
 
     def remove_opponents_piece(self, piece):
         if piece in self.occupied():
