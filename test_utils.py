@@ -1,4 +1,4 @@
-from classes import Player, Point, Board, PointInMillError, find_mills
+from classes import Player, Point, Board, PointInMillError
 import utils
 import pytest
 
@@ -14,7 +14,8 @@ def test_find_mils():
     player1.place_piece(point11)
     player1.place_piece(point03)
     player1.place_piece(point06)
-    mills = find_mills(player1)
+    player1.find_mills()
+    mills = player1.mills_list()
     assert len(mills) == 1
     assert point00 in mills[0]
     assert point03 in mills[0]
@@ -35,7 +36,8 @@ def test_find_mills():
     player1.place_piece(point55)
     player1.place_piece(point43)
     player1.place_piece(point44)
-    mills = find_mills(player1)
+    player1.find_mills()
+    mills = player1.mills_list()
     assert len(mills) == 1
     assert len(mills[0]) == 3
     assert point51 in mills[0]
@@ -58,7 +60,8 @@ def test_find_mills_eq_2():
     player1.place_piece(point43)
     player1.place_piece(point44)
     player1.place_piece(point63)
-    mills = find_mills(player1)
+    player1.find_mills()
+    mills = player1.mills_list()
     assert len(mills) == 2
 
 
@@ -73,7 +76,7 @@ def test_find_mills_middle_case():
     player.place_piece(point32)
     player.place_piece(point34)
     player.place_piece(point22)
-    mills = find_mills(player)
+    mills = player.mills_list()
     assert mills == []
 
 
@@ -81,7 +84,8 @@ def test_find_mills_all_points():
     board = Board()
     player = Player(1)
     player._occupied = board._points_list
-    mills = find_mills(player)
+    player.find_mills()
+    mills = player.mills_list()
     assert len(mills) == 16
 
 
@@ -96,7 +100,8 @@ def test_locked_mills():
     player1.place_piece(point00)
     player1.place_piece(point03)
     player1.place_piece(point06)
-    find_mills(player1)
+    player1.find_mills()
+    mills = player1.mills_list()
     with pytest.raises(PointInMillError):
         player2.remove_opponents_piece(point00)
     player1.move_piece(point00, point11)
@@ -122,7 +127,8 @@ def test_locked_1p_2mills():
     player1.place_piece(point43)
     player1.place_piece(point44)
     player1.place_piece(point63)
-    find_mills(player1)
+    player1.find_mills()
+    mills = player1.mills_list()
     with pytest.raises(PointInMillError):
         player2.remove_opponents_piece(point51)
     player1.move_piece(point43, point42)
@@ -130,3 +136,23 @@ def test_locked_1p_2mills():
     assert point63.owner() == None
     assert point63.locked() == False
     assert point53.locked() == False
+
+
+def test_checking_last_mill():
+    board = Board()
+    point00 = board.get_point((0, 0))
+    point11 = board.get_point((1, 1))
+    point03 = board.get_point((0, 3))
+    point06 = board.get_point((0, 6))
+    point30 = board.get_point((3,0))
+    player1 = Player(1)
+    assert player1.is_mill() == False
+    player1.place_piece(point00)
+    player1.place_piece(point11)
+    player1.place_piece(point03)
+    player1.place_piece(point06)
+    player1.find_mills()
+    assert player1.is_mill() == True
+    player1.move_piece(point00,point30)
+    assert player1.is_mill() == False
+

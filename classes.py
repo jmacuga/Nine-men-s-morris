@@ -1,5 +1,6 @@
 from tabulate import tabulate
 
+
 class IncorrectCoordsError(Exception):
     pass
 
@@ -27,28 +28,6 @@ class PointOwnerError(Exception):
 class PointInMillError(Exception):
     pass
 
-def find_mills(player: "Player"):
-    # """find all mills
-    # check
-    # -if at least 3 points in player's points are connected
-    # -if connected points are in the same line
-
-    # returns list of mills
-    # """
-    mills = []
-    for point1 in player.occupied():
-        connect_list = [point2 for point2 in player.occupied(
-        ) if point1.coord() in point2.posbl_mov()]
-        if len(connect_list) >= 2:
-            for i in range(2):
-                coords_match = [point for point in connect_list if point.coord()[
-                    i] == point1.coord()[i]]
-                if len(coords_match) == 2:
-                    coords_match.append(point1)
-                    mills.append(coords_match)
-                    for point in coords_match:
-                        point._locked = True
-    return mills
 
 class Player:
     """ attributes:
@@ -66,10 +45,11 @@ class Player:
 
         """
 
-    def __init__(self, id, points=0):
+    def __init__(self, id):
         self._id = id
-        self._points = points
         self._occupied = []
+        self._mills_list = []
+        self._is_mill = False
 # points may be redundant - winner is player who removes
 # opponents pieces to two or opponent cannot make legal move
 
@@ -78,6 +58,12 @@ class Player:
 
     def occupied(self):
         return self._occupied
+
+    def mills_list(self):
+        return self._mills_list
+
+    def is_mill(self):
+        return self._is_mill
 
     def place_piece(self, point: "Point"):
         self._occupied.append(point)
@@ -107,6 +93,35 @@ class Player:
             raise PointInMillError("This point is in mill")
         else:
             piece.remove_owner()
+
+    def find_mills(self):
+        """find all mills
+        check
+        -if at least 3 points in player's points are connected
+        -if connected points are in the same line
+
+        if list of mills changed and tehre is new mill-- > set  is mill true
+
+        returns list of mills
+        """
+        mills = []
+        for point1 in self.occupied():
+            connect_list = [point2 for point2 in self.occupied(
+            ) if point1.coord() in point2.posbl_mov()]
+            if len(connect_list) >= 2:
+                for i in range(2):
+                    coords_match = [point for point in connect_list if point.coord()[
+                        i] == point1.coord()[i]]
+                    if len(coords_match) == 2:
+                        coords_match.append(point1)
+                        mills.append(coords_match)
+                        for point in coords_match:
+                            point._locked = True
+        if (not mills == self._mills_list) and (len(mills) >= len(self._mills_list)):
+            self._is_mill = True
+        else:
+            self._is_mill = False
+        self._mills_list = mills
 
 
 class Point:
@@ -153,7 +168,8 @@ class Point:
         return self._locked
 
     def unlock(self):
-        mills = find_mills(self._owner)
+        self.owner().find_mills()
+        mills = self.owner().mills_list()
         for mill in mills:
             if self in mill:
                 for point in mill:
@@ -178,7 +194,6 @@ class Point:
             self._taken = False
         else:
             raise FreePointError("Cannot remove a piece from this point")
-# needs test --
 
 
 class Board:
