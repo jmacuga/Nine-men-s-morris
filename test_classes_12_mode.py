@@ -1,6 +1,6 @@
 from classes import ImpossibleMove, FreePointError, Player, Point, Board, PointOccupiedError
 import pytest
-
+from game import Game
 
 def test_player_class():
     player1 = Player(1)
@@ -35,7 +35,8 @@ def test_player_place_piece():
 
 
 def test_print_board():
-    board = Board()
+    game = Game()
+    board = Board(game._points12, game._board7)
     assert board.print_board() == """╒════╤═════╤═════╤═════╤═════╤═════╤═════╤═════╕
 │    │  0  │  1  │  2  │  3  │  4  │  5  │  6  │
 ╞════╪═════╪═════╪═════╪═════╪═════╪═════╪═════╡
@@ -56,7 +57,8 @@ def test_print_board():
 
 
 def test_get_point_by_coord():
-    board = Board()
+    game = Game()
+    board = Board(game._points12, game._board7)
     assert board.get_point((1, 1)).coord() == (1, 1)
     point00 = board.get_point((0, 0))
     point11 = board.get_point((1, 1))
@@ -64,8 +66,9 @@ def test_get_point_by_coord():
 
 
 def test_board_status_change():
-    board = Board()
-    point00 = board.get_point((0, 0))
+    game = Game()
+    board = Board(game._points12, game._board7)
+    point00 = board.get_point((0,0))
     player1 = Player(1)
     player2 = Player(2)
     player1.place_piece(point00)
@@ -109,7 +112,8 @@ def test_board_status_change():
 
 
 def test_point_remove_owner():
-    board = Board()
+    game = Game()
+    board = Board(game._points12, game._board7)
     point00 = board.get_point((0, 0))
     player1 = Player(1)
     player1.place_piece(point00)
@@ -118,14 +122,16 @@ def test_point_remove_owner():
 
 
 def test_point_remove_owner_free_point():
-    board = Board()
+    game = Game()
+    board = Board(game._points12, game._board7)
     point00 = board.get_point((0, 0))
     with pytest.raises(FreePointError):
         point00.remove_owner()
 
 
 def test_board_players_collision():
-    board = Board()
+    game = Game()
+    board = Board(game._points12, game._board7)
     point00 = board.get_point((0, 0))
     player1 = Player(1)
     player2 = Player(2)
@@ -135,7 +141,8 @@ def test_board_players_collision():
 
 
 def test_move_piece():
-    board = Board()
+    game = Game()
+    board = Board(game._points12, game._board7)
     point00 = board.get_point((0, 0))
     point11 = board.get_point((1, 1))
     player1 = Player(1)
@@ -148,7 +155,8 @@ def test_move_piece():
 
 
 def test_move_piece_imppossible_move():
-    board = Board()
+    game = Game()
+    board = Board(game._points12, game._board7)
     point00 = board.get_point((0, 0))
     point66 = board.get_point((6, 6))
     player1 = Player(1)
@@ -158,7 +166,8 @@ def test_move_piece_imppossible_move():
 
 
 def test_move_impossible_move_piece_not_owned():
-    board = Board()
+    game = Game()
+    board = Board(game._points12, game._board7)
     point00 = board.get_point((0, 0))
     point11 = board.get_point((1, 1))
     player1 = Player(1)
@@ -167,7 +176,8 @@ def test_move_impossible_move_piece_not_owned():
 
 
 def test_remove_owner():
-    board = Board()
+    game = Game()
+    board = Board(game._points12, game._board7)
     point00 = board.get_point((0, 0))
     player1 = Player(1)
     player1.place_piece(point00)
@@ -178,7 +188,8 @@ def test_remove_owner():
 
 
 def test_fly_piece():
-    board = Board()
+    game = Game()
+    board = Board(game._points12, game._board7)
     point00 = board.get_point((0, 0))
     point66 = board.get_point((6, 6))
     player1 = Player(1)

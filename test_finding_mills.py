@@ -1,9 +1,11 @@
 from classes import Player, Board, PointInMillError
+from game import Game
 import pytest
 
 
 def test_find_mils():
-    board = Board()
+    game = Game()
+    board = Board(game._points12, game._board7)
     point00 = board.get_point((0, 0))
     point11 = board.get_point((1, 1))
     point03 = board.get_point((0, 3))
@@ -22,7 +24,8 @@ def test_find_mils():
 
 
 def test_find_mills():
-    board = Board()
+    game = Game()
+    board = Board(game._points12, game._board7)
     point51 = board.get_point((5, 1))
     point53 = board.get_point((5, 3))
     point55 = board.get_point((5, 5))
@@ -44,7 +47,8 @@ def test_find_mills():
 
 
 def test_find_mills_eq_2():
-    board = Board()
+    game = Game()
+    board = Board(game._points12, game._board7)
     point51 = board.get_point((5, 1))
     point53 = board.get_point((5, 3))
     point55 = board.get_point((5, 5))
@@ -64,7 +68,8 @@ def test_find_mills_eq_2():
 
 
 def test_find_mills_middle_case():
-    board = Board()
+    game = Game()
+    board = Board(game._points12, game._board7)
     point30 = board.get_point((3, 0))
     point32 = board.get_point((3, 2))
     point34 = board.get_point((3, 4))
@@ -79,7 +84,8 @@ def test_find_mills_middle_case():
 
 
 def test_find_mills_all_points():
-    board = Board()
+    game = Game()
+    board = Board(game._points12, game._board7)
     player = Player(1)
     player._occupied = board._points_list
     player.find_mills()
@@ -88,7 +94,8 @@ def test_find_mills_all_points():
 
 
 def test_locked_mills():
-    board = Board()
+    game = Game()
+    board = Board(game._points12, game._board7)
     point00 = board.get_point((0, 0))
     point03 = board.get_point((0, 3))
     point06 = board.get_point((0, 6))
@@ -109,7 +116,8 @@ def test_locked_mills():
 
 
 def test_locked_1p_2mills():
-    board = Board()
+    game = Game()
+    board = Board(game._points12, game._board7)
     point51 = board.get_point((5, 1))
     point53 = board.get_point((5, 3))
     point55 = board.get_point((5, 5))
@@ -137,7 +145,8 @@ def test_locked_1p_2mills():
 
 
 def test_checking_last_mill():
-    board = Board()
+    game = Game()
+    board = Board(game._points12, game._board7)
     point00 = board.get_point((0, 0))
     point11 = board.get_point((1, 1))
     point03 = board.get_point((0, 3))
