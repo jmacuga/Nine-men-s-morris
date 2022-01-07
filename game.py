@@ -1,67 +1,17 @@
-from classes import Player, Point, Board
+from classes import Mode, Player, Point, Board
 
 
 class Game:
-    def __init__(self, mode=1):
-        self._mode = mode
-        self._points12 = [Point((0, 0), [(0, 3), (1, 1), (3, 0)]),
-                          Point((0, 3), [(1, 3), (0, 0), (0, 6)]),
-                          Point((0, 6), [(0, 3), (1, 5), (3, 6)]),
-                          Point((1, 1), [(0, 0), (1, 3), (3, 1), (2, 2)]),
-                          Point((1, 3), [(0, 3), (1, 1), (1, 5), (2, 3)]),
-                          Point((1, 5), [(0, 6), (1, 3), (3, 5), (2, 4)]),
-                          Point((2, 2), [(2, 3), (1, 1), (3, 2)]),
-                          Point((2, 3), [(2, 2), (1, 3), (2, 4)]),
-                          Point((2, 4), [(2, 3), (3, 4), (1, 5)]),
-                          Point((3, 0), [(0, 0), (6, 0), (3, 1)]),
-                          Point((3, 1), [(3, 0), (1, 1), (5, 1), (3, 2)]),
-                          Point((3, 2), [(2, 2), (3, 1), (4, 2)]),
-                          Point((3, 4), [(2, 4), (3, 5), (4, 4)]),
-                          Point((3, 5), [(3, 4), (3, 6), (1, 5), (5, 5)]),
-                          Point((3, 6), [(3, 5), (0, 6), (6, 6)]),
-                          Point((4, 2), [(3, 2), (5, 1), (4, 3)]),
-                          Point((4, 3), [(4, 2), (5, 3), (4, 4)]),
-                          Point((4, 4), [(4, 3), (3, 4), (5, 5)]),
-                          Point((5, 1), [(4, 2), (3, 1), (6, 0), (5, 3)]),
-                          Point((5, 3), [(5, 1), (4, 3), (5, 5), (6, 3)]),
-                          Point((5, 5), [(5, 3), (4, 4), (3, 5), (6, 6)]),
-                          Point((6, 0), [(3, 0), (6, 3), (5, 1)]),
-                          Point((6, 3), [(6, 0), (5, 3), (6, 6)]),
-                          Point((6, 6), [(6, 3), (5, 5), (3, 6)])
-                          ]
-        self._board7 = [["_", "_", "_", "_", "_", "_", "_"],
-                        ["_", "_", "_", "_", "_", "_", "_"],
-                        ["_", "_", "_", "_", "_", "_", "_"],
-                        ["_", "_", "_", "_", "_", "_", "_"],
-                        ["_", "_", "_", "_", "_", "_", "_"],
-                        ["_", "_", "_", "_", "_", "_", "_"],
-                        ["_", "_", "_", "_", "_", "_", "_"],
-                        ]
-        self._points9 = [Point((0, 0), [(0, 3), (3, 0)]),
-                         Point((0, 3), [(1, 3), (0, 0), (0, 6)]),
-                         Point((0, 6), [(0, 3), (3, 6)]),
-                         Point((1, 1), [(1, 3), (3, 1)]),
-                         Point((1, 3), [(0, 3), (1, 1), (1, 5), (2, 3)]),
-                         Point((1, 5), [(1, 3), (3, 5)]),
-                         Point((2, 2), [(2, 3), (3, 2)]),
-                         Point((2, 3), [(2, 2), (1, 3), (2, 4)]),
-                         Point((2, 4), [(2, 3), (3, 4)]),
-                         Point((3, 0), [(0, 0), (6, 0), (3, 1)]),
-                         Point((3, 1), [(3, 0), (1, 1), (5, 1), (3, 2)]),
-                         Point((3, 2), [(2, 2), (3, 1), (4, 2)]),
-                         Point((3, 4), [(2, 4), (3, 5), (4, 4)]),
-                         Point((3, 5), [(3, 4), (3, 6), (1, 5), (5, 5)]),
-                         Point((3, 6), [(3, 5), (0, 6), (6, 6)]),
-                         Point((4, 2), [(3, 2), (4, 3)]),
-                         Point((4, 3), [(4, 2), (5, 3), (4, 4)]),
-                         Point((4, 4), [(4, 3), (3, 4)]),
-                         Point((5, 1), [(3, 1), (5, 3)]),
-                         Point((5, 3), [(5, 1), (4, 3), (5, 5), (6, 3)]),
-                         Point((5, 5), [(5, 3), (3, 5)]),
-                         Point((6, 0), [(3, 0), (6, 3)]),
-                         Point((6, 3), [(6, 0), (5, 3), (6, 6)]),
-                         Point((6, 6), [(6, 3), (3, 6)])
-                         ]
+    def __init__(self, mode_number):
+        modes = {1: (Mode(), Board(3, 3)),
+                 2: (Mode(True), Board(6, 5)),
+                 3: (Mode(True, True), Board(9, 7)),
+                 4: (Mode(True, True), Board(12, 7))}
+        self._mode = modes[mode_number][0]
+        self._board = modes[mode_number][1]
+
+    def board(self):
+        return self._board
 
     def check_if_phase_moving(player1, player2, game_mode):
         if len(player1.occupied()) == game_mode and len(player2.occupied()) == game_mode:
@@ -77,3 +27,42 @@ class Game:
             return True
         else:
             return False
+
+    def pick_board():
+        """generate mode object from given"""
+
+    def pick_player():
+        """generate_player"""
+        pass
+
+    # phase:
+    def make_move(player, phase):
+        """enter coords
+        check cords
+        move - for phase
+        print board
+        check mills -- > remove
+        check phase
+        check win
+        """
+        pass
+
+    def check_mills():
+        pass
+
+    def remove_opponent():
+        """
+        input
+        check
+        remove
+        print board"""
+        pass
+
+    def check_phase():
+        pass
+
+    def check_win():
+        pass
+
+    """ reveal winner
+    """

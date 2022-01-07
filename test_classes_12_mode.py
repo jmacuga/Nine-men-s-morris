@@ -2,63 +2,32 @@ from classes import ImpossibleMove, FreePointError, Player, Point, Board, PointO
 import pytest
 from game import Game
 
-def test_player_class():
-    player1 = Player(1)
-    player2 = Player(2)
-    assert player1.id() == 1
-    assert player2._occupied == []
-
-
-def test_point():
-    point00 = Point((0, 0), [(0, 3), (1, 1), (3, 0)])
-    assert point00.coord() == (0, 0)
-    assert point00.posbl_mov()[0] == (0, 3)
-    assert len(point00.posbl_mov()) == 3
-    assert point00._taken == False
-    assert point00.symbol() == []
-
-
-def test_point_posbl_mov():
-    point00 = Point((0, 0), [(0, 3), (1, 1), (3, 0)])
-    point03 = Point((0, 3), [(1, 3), (0, 0), (0, 6)])
-    assert point00.coord() in point03.posbl_mov()
-
-
-def test_player_place_piece():
-    point00 = Point((0, 0), [(0, 3), (1, 1), (3, 0)])
-    player1 = Player(1)
-    player1.place_piece(point00)
-    assert player1.occupied()[0].coord() == (0, 0)
-    assert point00._taken == True
-    assert point00.owner() == player1
-    assert point00.symbol() == "O"
-
 
 def test_print_board():
-    game = Game()
-    board = Board(game._points12, game._board7)
+    game = Game(4)
+    board = game.board()
     assert board.print_board() == """╒════╤═════╤═════╤═════╤═════╤═════╤═════╤═════╕
 │    │  0  │  1  │  2  │  3  │  4  │  5  │  6  │
 ╞════╪═════╪═════╪═════╪═════╪═════╪═════╪═════╡
-│ 0  │ []  │  _  │  _  │ []  │  _  │  _  │ []  │
+│ 0  │ []  │  -  │  -  │ []  │  -  │  -  │ []  │
 ├────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│ 1  │  _  │ []  │  _  │ []  │  _  │ []  │  _  │
+│ 1  │  -  │ []  │  -  │ []  │  -  │ []  │  -  │
 ├────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│ 2  │  _  │  _  │ []  │ []  │ []  │  _  │  _  │
+│ 2  │  -  │  -  │ []  │ []  │ []  │  -  │  -  │
 ├────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│ 3  │ []  │ []  │ []  │  _  │ []  │ []  │ []  │
+│ 3  │ []  │ []  │ []  │  -  │ []  │ []  │ []  │
 ├────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│ 4  │  _  │  _  │ []  │ []  │ []  │  _  │  _  │
+│ 4  │  -  │  -  │ []  │ []  │ []  │  -  │  -  │
 ├────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│ 5  │  _  │ []  │  _  │ []  │  _  │ []  │  _  │
+│ 5  │  -  │ []  │  -  │ []  │  -  │ []  │  -  │
 ├────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│ 6  │ []  │  _  │  _  │ []  │  _  │  _  │ []  │
+│ 6  │ []  │  -  │  -  │ []  │  -  │  -  │ []  │
 ╘════╧═════╧═════╧═════╧═════╧═════╧═════╧═════╛"""
 
 
 def test_get_point_by_coord():
-    game = Game()
-    board = Board(game._points12, game._board7)
+    game = Game(4)
+    board = game.board()
     assert board.get_point((1, 1)).coord() == (1, 1)
     point00 = board.get_point((0, 0))
     point11 = board.get_point((1, 1))
@@ -66,54 +35,54 @@ def test_get_point_by_coord():
 
 
 def test_board_status_change():
-    game = Game()
-    board = Board(game._points12, game._board7)
-    point00 = board.get_point((0,0))
+    game = Game(4)
+    board = game.board()
+    point00 = board.get_point((0, 0))
     player1 = Player(1)
     player2 = Player(2)
     player1.place_piece(point00)
     assert board.print_board() == """╒════╤═════╤═════╤═════╤═════╤═════╤═════╤═════╕
 │    │  0  │  1  │  2  │  3  │  4  │  5  │  6  │
 ╞════╪═════╪═════╪═════╪═════╪═════╪═════╪═════╡
-│ 0  │  O  │  _  │  _  │ []  │  _  │  _  │ []  │
+│ 0  │  O  │  -  │  -  │ []  │  -  │  -  │ []  │
 ├────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│ 1  │  _  │ []  │  _  │ []  │  _  │ []  │  _  │
+│ 1  │  -  │ []  │  -  │ []  │  -  │ []  │  -  │
 ├────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│ 2  │  _  │  _  │ []  │ []  │ []  │  _  │  _  │
+│ 2  │  -  │  -  │ []  │ []  │ []  │  -  │  -  │
 ├────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│ 3  │ []  │ []  │ []  │  _  │ []  │ []  │ []  │
+│ 3  │ []  │ []  │ []  │  -  │ []  │ []  │ []  │
 ├────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│ 4  │  _  │  _  │ []  │ []  │ []  │  _  │  _  │
+│ 4  │  -  │  -  │ []  │ []  │ []  │  -  │  -  │
 ├────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│ 5  │  _  │ []  │  _  │ []  │  _  │ []  │  _  │
+│ 5  │  -  │ []  │  -  │ []  │  -  │ []  │  -  │
 ├────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│ 6  │ []  │  _  │  _  │ []  │  _  │  _  │ []  │
+│ 6  │ []  │  -  │  -  │ []  │  -  │  -  │ []  │
 ╘════╧═════╧═════╧═════╧═════╧═════╧═════╧═════╛"""
     point22 = board.get_point((2, 2))
     player2.place_piece(point22)
     assert board.print_board() == """╒════╤═════╤═════╤═════╤═════╤═════╤═════╤═════╕
 │    │  0  │  1  │  2  │  3  │  4  │  5  │  6  │
 ╞════╪═════╪═════╪═════╪═════╪═════╪═════╪═════╡
-│ 0  │  O  │  _  │  _  │ []  │  _  │  _  │ []  │
+│ 0  │  O  │  -  │  -  │ []  │  -  │  -  │ []  │
 ├────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│ 1  │  _  │ []  │  _  │ []  │  _  │ []  │  _  │
+│ 1  │  -  │ []  │  -  │ []  │  -  │ []  │  -  │
 ├────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│ 2  │  _  │  _  │  X  │ []  │ []  │  _  │  _  │
+│ 2  │  -  │  -  │  X  │ []  │ []  │  -  │  -  │
 ├────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│ 3  │ []  │ []  │ []  │  _  │ []  │ []  │ []  │
+│ 3  │ []  │ []  │ []  │  -  │ []  │ []  │ []  │
 ├────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│ 4  │  _  │  _  │ []  │ []  │ []  │  _  │  _  │
+│ 4  │  -  │  -  │ []  │ []  │ []  │  -  │  -  │
 ├────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│ 5  │  _  │ []  │  _  │ []  │  _  │ []  │  _  │
+│ 5  │  -  │ []  │  -  │ []  │  -  │ []  │  -  │
 ├────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
-│ 6  │ []  │  _  │  _  │ []  │  _  │  _  │ []  │
+│ 6  │ []  │  -  │  -  │ []  │  -  │  -  │ []  │
 ╘════╧═════╧═════╧═════╧═════╧═════╧═════╧═════╛"""
     assert player1.occupied()[0] == point00
 
 
 def test_point_remove_owner():
-    game = Game()
-    board = Board(game._points12, game._board7)
+    game = Game(4)
+    board = game.board()
     point00 = board.get_point((0, 0))
     player1 = Player(1)
     player1.place_piece(point00)
@@ -122,16 +91,16 @@ def test_point_remove_owner():
 
 
 def test_point_remove_owner_free_point():
-    game = Game()
-    board = Board(game._points12, game._board7)
+    game = Game(4)
+    board = game.board()
     point00 = board.get_point((0, 0))
     with pytest.raises(FreePointError):
         point00.remove_owner()
 
 
 def test_board_players_collision():
-    game = Game()
-    board = Board(game._points12, game._board7)
+    game = Game(4)
+    board = game.board()
     point00 = board.get_point((0, 0))
     player1 = Player(1)
     player2 = Player(2)
@@ -141,8 +110,8 @@ def test_board_players_collision():
 
 
 def test_move_piece():
-    game = Game()
-    board = Board(game._points12, game._board7)
+    game = Game(4)
+    board = game.board()
     point00 = board.get_point((0, 0))
     point11 = board.get_point((1, 1))
     player1 = Player(1)
@@ -155,8 +124,8 @@ def test_move_piece():
 
 
 def test_move_piece_imppossible_move():
-    game = Game()
-    board = Board(game._points12, game._board7)
+    game = Game(4)
+    board = game.board()
     point00 = board.get_point((0, 0))
     point66 = board.get_point((6, 6))
     player1 = Player(1)
@@ -166,8 +135,8 @@ def test_move_piece_imppossible_move():
 
 
 def test_move_impossible_move_piece_not_owned():
-    game = Game()
-    board = Board(game._points12, game._board7)
+    game = Game(4)
+    board = game.board()
     point00 = board.get_point((0, 0))
     point11 = board.get_point((1, 1))
     player1 = Player(1)
@@ -176,8 +145,8 @@ def test_move_impossible_move_piece_not_owned():
 
 
 def test_remove_owner():
-    game = Game()
-    board = Board(game._points12, game._board7)
+    game = Game(4)
+    board = game.board()
     point00 = board.get_point((0, 0))
     player1 = Player(1)
     player1.place_piece(point00)
@@ -188,8 +157,8 @@ def test_remove_owner():
 
 
 def test_fly_piece():
-    game = Game()
-    board = Board(game._points12, game._board7)
+    game = Game(4)
+    board = game.board()
     point00 = board.get_point((0, 0))
     point66 = board.get_point((6, 6))
     player1 = Player(1)
