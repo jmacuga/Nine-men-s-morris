@@ -179,7 +179,7 @@ class Point:
             self._owner = player
             self._taken = True
         else:
-            raise PointOccupiedError("This point is already occupied.")
+            raise PointOccupiedError("This point is already occupied. Pick another one.")
 
     def remove_owner(self):
         if self._owner:
