@@ -69,7 +69,7 @@ class Player:
         self._occupied.append(point)
         point.set_owner(self)
 
-    def move_piece(self, point1: "Point", point2: "Point", fly=False):
+    def move_piece(self, point1: "Point", point2: 'Point', fly=False):
         # chceck if a point belongs to player,
         # if a move is possible
         # move point

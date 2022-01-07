@@ -1,8 +1,11 @@
 from classes import Mode, Player, Point, Board, ImpossibleMove, CoordsOfNotActivePoint
 from classes import PointOwnerError, PointInMillError, PointOccupiedError
+import os
 
 
 class Game:
+    clear = lambda: os.system('clear')
+    clear()
     def __init__(self, mode_number):
         modes = {1: (Mode(), Board(3, 3)),
                  2: (Mode(True), Board(6, 5)),
@@ -41,15 +44,20 @@ class Game:
             return False
 
     def check_mills(self, player):
+
         """
         input
         check
         remove
         print board"""
+        clear = lambda: os.system('clear')
         player.find_mills()
         if player.is_mill():
+            clear()
+            print(self.board().print_board())
             print("YOU HAVE A MILLL CONGRATTTS SISSS")
             removed = False
+            print("pick oponnents piece to remove:")
             while not removed:
                 try:
                     coords = self.coords_input()
@@ -66,6 +74,7 @@ class Game:
                 except PointInMillError as e:
                     print(e)
                     continue
+
 
 
 

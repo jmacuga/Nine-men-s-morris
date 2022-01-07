@@ -27,7 +27,6 @@ def pick_mode():
     return int(game_mode)
 
 def main():
-    import os
     clear = lambda: os.system('clear')
     clear()
     game_mode = pick_mode()
