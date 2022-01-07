@@ -32,15 +32,18 @@ def main():
     clear()
     game_mode = pick_mode()
     game = Game(game_mode)
-    player1 = Player(1)
-    player2 = Player(2)
+    player1 = game.player1
+    player2 = game.player2
     board = game.board()
     clear()
     print(board.print_board())
     while game.win() == False:
         for player in [player1, player2]:
             clear()
+            game.check_phase()
             game.make_move(player)
+            game.check_mills(player)
+
 
 
 

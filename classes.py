@@ -98,7 +98,6 @@ class Player:
 
         if list of mills changed and tehre is new mill-- > set  is mill true
 
-        returns list of mills
         """
         mills = []
         for point1 in self.occupied():
