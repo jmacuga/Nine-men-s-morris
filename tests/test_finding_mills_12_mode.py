@@ -4,8 +4,8 @@ import pytest
 
 
 def test_find_mils():
-    game = Game()
-    board = Board(game._points12, game._board7)
+    game = Game(4)
+    board = game.board()
     point00 = board.get_point((0, 0))
     point11 = board.get_point((1, 1))
     point03 = board.get_point((0, 3))
@@ -24,8 +24,8 @@ def test_find_mils():
 
 
 def test_find_mills():
-    game = Game()
-    board = Board(game._points12, game._board7)
+    game = Game(4)
+    board = game.board()
     point51 = board.get_point((5, 1))
     point53 = board.get_point((5, 3))
     point55 = board.get_point((5, 5))
@@ -47,10 +47,10 @@ def test_find_mills():
 
 
 def test_find_mills_eq_2():
-    game = Game()
-    board = Board(game._points12, game._board7)
-    point51 = board.get_point((5, 1))
+    game = Game(4)
+    board = game.board()
     point53 = board.get_point((5, 3))
+    point51 = board.get_point((5,1))
     point55 = board.get_point((5, 5))
     point43 = board.get_point((4, 3))
     point44 = board.get_point((4, 4))
@@ -68,8 +68,8 @@ def test_find_mills_eq_2():
 
 
 def test_find_mills_middle_case():
-    game = Game()
-    board = Board(game._points12, game._board7)
+    game = Game(4)
+    board = game.board()
     point30 = board.get_point((3, 0))
     point32 = board.get_point((3, 2))
     point34 = board.get_point((3, 4))
@@ -84,8 +84,8 @@ def test_find_mills_middle_case():
 
 
 def test_find_mills_all_points():
-    game = Game()
-    board = Board(game._points12, game._board7)
+    game = Game(4)
+    board = game.board()
     player = Player(1)
     player._occupied = board._points_list
     player.find_mills()
@@ -94,8 +94,8 @@ def test_find_mills_all_points():
 
 
 def test_locked_mills():
-    game = Game()
-    board = Board(game._points12, game._board7)
+    game = Game(4)
+    board = game.board()
     point00 = board.get_point((0, 0))
     point03 = board.get_point((0, 3))
     point06 = board.get_point((0, 6))
@@ -116,8 +116,8 @@ def test_locked_mills():
 
 
 def test_locked_1p_2mills():
-    game = Game()
-    board = Board(game._points12, game._board7)
+    game = Game(4)
+    board = game.board()
     point51 = board.get_point((5, 1))
     point53 = board.get_point((5, 3))
     point55 = board.get_point((5, 5))
@@ -145,8 +145,8 @@ def test_locked_1p_2mills():
 
 
 def test_checking_last_mill():
-    game = Game()
-    board = Board(game._points12, game._board7)
+    game = Game(4)
+    board = game.board()
     point00 = board.get_point((0, 0))
     point11 = board.get_point((1, 1))
     point03 = board.get_point((0, 3))
@@ -163,3 +163,25 @@ def test_checking_last_mill():
     player1.move_piece(point00,point30)
     assert player1.is_mill() == False
 
+
+def test_checking_last_mill_2():
+    game = Game(4)
+    board = game.board()
+    point00 = board.get_point((0, 0))
+    point11 = board.get_point((1, 1))
+    point03 = board.get_point((0, 3))
+    point06 = board.get_point((0, 6))
+    point30 = board.get_point((3,0))
+    point55 = board.get_point((5, 5))
+    player1 = Player(1)
+    player2 = Player(2)
+    assert player1.is_mill() == False
+    player1.place_piece(point00)
+    player1.place_piece(point11)
+    player1.place_piece(point03)
+    player1.place_piece(point06)
+    player1.find_mills()
+    assert player1.is_mill() == True
+    player1.place_piece(point30)
+    player1.find_mills()
+    assert player1.is_mill() == False
