@@ -50,6 +50,7 @@ class Player:
         self._occupied = []
         self._mills_list = []
         self._is_mill = False
+        self.placed_num = 0
 # points may be redundant - winner is player who removes
 # opponents pieces to two or opponent cannot make legal move
 
@@ -66,8 +67,9 @@ class Player:
         return self._is_mill
 
     def place_piece(self, point: "Point"):
-        self._occupied.append(point)
         point.set_owner(self)
+        self._occupied.append(point)
+        self.placed_num += 1
 
     def move_piece(self, point1: "Point", point2: 'Point', fly=False):
         # chceck if a point belongs to player,
@@ -118,13 +120,28 @@ class Player:
             self._is_mill = False
         self._mills_list = mills
 
+    def possible_moves(self, board):
+        moves = []
+        for point in self.occupied():
+            for nextpoint in board.points_list():
+                if nextpoint.coord() in point.posbl_mov() and not nextpoint.owner():
+                    moves.append((point, nextpoint))
+        return moves
+
+    def possible_fly_moves(self, board):
+        fly_moves = []
+        for point in self.occupied():
+            for nextpoint in board.points_list():
+                if not nextpoint.owner():
+                    fly_moves.append((point, nextpoint))
+        return fly_moves
+
 
 class Point:
     """ attributes:
 
         coordinates
         possible movement points
-        taken : True/False
         owner: optional
 
 
@@ -135,10 +152,9 @@ class Point:
 
         """
 
-    def __init__(self, coordinates: tuple, posbl_mov: list, taken: bool = False, owner: 'Player' = None, locked=False):
+    def __init__(self, coordinates: tuple, posbl_mov: list, owner: 'Player' = None, locked=False):
         self._coords = coordinates
         self._posbl_mov = posbl_mov
-        self._taken = taken
         self._owner = owner if owner else None
         self._locked = locked
 
@@ -149,7 +165,7 @@ class Point:
         return self._posbl_mov
 
     def symbol(self):
-        if not self._taken:
+        if not self.owner():
             return []
         elif self._owner.id() == 1:
             return "O"
@@ -170,15 +186,12 @@ class Point:
                 for point in mill:
                     point._locked = False
 
-    def taken(self):
-        return self._taken
-
     def set_owner(self, player: "Player" = None):
-        if not self._taken:
+        if not self._owner:
             self._owner = player
-            self._taken = True
         else:
-            raise PointOccupiedError("This point is already occupied. Pick another one.")
+            raise PointOccupiedError(
+                "This point is already occupied. Pick another one.")
 
     def remove_owner(self):
         if self._owner:
@@ -186,7 +199,6 @@ class Point:
                 self.unlock()
             self._owner._occupied.remove(self)
             self._owner = None
-            self._taken = False
         else:
             raise FreePointError("Cannot remove a piece from this point")
 
@@ -293,11 +305,14 @@ class Board:
         self._points_coord_dict = {
             point.coord(): point for point in self._points_list}
 
+    def points_list(self):
+        return self._points_list
+
     def print_board(self):
         headers = ""
         for i in range(self._board_size):
-            headers+= str(i)
-        return tabulate(self.board(), headers= headers, tablefmt="fancy_grid",
+            headers += str(i)
+        return tabulate(self.board(), headers=headers, tablefmt="fancy_grid",
                         showindex=True, numalign="center", stralign="center")
 
     def get_point(self, coord: tuple):
@@ -329,15 +344,3 @@ class Board:
 
     def points3(self):
         pass
-
-
-class Mode:
-    def __init__(self, moving=False, flyig=False):
-        self._moving = moving
-        self._flying = flyig
-
-    def moving(self):
-        return self._moving
-
-    def flying(self):
-        return self._flying

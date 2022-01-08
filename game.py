@@ -1,17 +1,18 @@
-from classes import Mode, Player, Point, Board, ImpossibleMove, CoordsOfNotActivePoint
+from classes import FreePointError, Player, Point, Board, ImpossibleMove, CoordsOfNotActivePoint
 from classes import PointOwnerError, PointInMillError, PointOccupiedError
 import os
 
 
 class Game:
-    clear = lambda: os.system('clear')
+    def clear(): return os.system('clear')
     clear()
+
     def __init__(self, mode_number):
-        modes = {1: (Mode(), Board(3, 3)),
-                 2: (Mode(True), Board(6, 5)),
-                 3: (Mode(True, True), Board(9, 7)),
-                 4: (Mode(True, True), Board(12, 7))}
-        self._mode = modes[mode_number][0]
+        modes = {1: (False, Board(3, 3)),
+                 2: (False, Board(6, 5)),
+                 3: (True, Board(9, 7)),
+                 4: (True, Board(12, 7))}
+        self._fly = modes[mode_number][0]
         self._board = modes[mode_number][1]
         self.player1 = Player(1)
         self.player2 = Player(2)
@@ -28,79 +29,124 @@ class Game:
     def set_phase(self, new_phase):
         self._phase = new_phase
 
-    def check_if_phase_moving(player1, player2, game_mode):
-        if len(player1.occupied()) == game_mode and len(player2.occupied()) == game_mode:
+    def players(self):
+        return [self.player1, self.player2]
+
+
+    def check_if_phase_moving(self):
+        pieces_num = self.board().pieces_num()
+        placed1 = self.player1.placed_num
+        placed2 = self.player2.placed_num
+        if placed1 == pieces_num and placed2 == pieces_num:
             return True
         else:
             return False
 
-    def check_if_win(self):
-        pass
-
-    def check_if_phase_flying(player1, player2, game_mode):
+    def check_if_phase_flying(player1, player2):
         if len(player2.occupied()) == 3 or len(player1.occupied()) == 3:
             return True
         else:
             return False
 
     def check_mills(self, player):
-
         """
         input
         check
         remove
         print board"""
-        clear = lambda: os.system('clear')
+        def clear(): return os.system('clear')
         player.find_mills()
         if player.is_mill():
             clear()
             print(self.board().print_board())
+            if self.board().pieces_num() == 3:
+                return
             print("YOU HAVE A MILLL CONGRATTTS SISSS")
             removed = False
-            print("pick oponnents piece to remove:")
-            while not removed:
-                try:
-                    coords = self.coords_input()
-                    point = self.board().get_point(coords)
-                except CoordsOfNotActivePoint as e:
-                    print(e)
-                    continue
-                try:
-                    player.remove_opponents_piece(point)
-                    removed = True
-                except PointOwnerError as e:
-                    print(e)
-                    continue
-                except PointInMillError as e:
-                    print(e)
-                    continue
+            if not self.player_removable(player):
+                print("But you cannot remove any of opponnets pieces :((")
+                input("Press Enter to continue")
+            else:
+                print("pick oponnents piece to remove:")
+                while not removed:
+                    try:
+                        coords = self.coords_input()
+                        point = self.board().get_point(coords)
+                    except CoordsOfNotActivePoint as e:
+                        print(e)
+                        continue
+                    try:
+                        player.remove_opponents_piece(point)
+                        removed = True
+                    except PointOwnerError as e:
+                        print(e)
+                        continue
+                    except PointInMillError as e:
+                        print(e)
+                        continue
+                    except FreePointError as e:
+                        print(e)
+                        continue
 
-
-
-
-
+    def player_removable(self, player):
+        if player == self.player1:
+            other_player = self.player2
+        else:
+            other_player = self.player1
+        for piece in other_player.occupied():
+            if not piece.locked():
+                return True
+            else:
+                continue
+        return False
 
     def check_phase(self):
         """check if phase is still valid
         if not  -> change phase if possible in mode
-        phase 1: until num of pieces == num of pl for mode
-        phase 2: until 1 of players has 3 players left
+        phase 1: until both players placed pieces pieces_num times
+        phase 2: until 1 of players has 3 pieces left
         phase 3 : until one of plyers has 2 pieces left"""
         if self._phase == "placing_pieces":
-            pieces_num = self.board().pieces_num()
-            if len(self.player1.occupied()) == pieces_num and len(self.player2.occupied()) == pieces_num:
+            if self.check_if_phase_moving():
                 self.set_phase("moving")
                 print("Scond phase: moving")
-        if self._phase == "moving" and self._mode.flying():
-            if len(self.player1.occupied() == 3):
+        if self._phase == "moving" and self._fly:
+            if self.check_if_phase_flying():
                 self.set_phase("flying")
                 print("Last phase: flying")
 
-    def check_win():
-        pass
+    def check_win(self):
+        if self._phase == "moving":
+            for player in self.players():
+                if len(player.occupied()) == 2:
+                    self._win = True
+                if not player.possible_moves(self.board()):
+                    self._win = True
+        if self.board().pieces_num() == 3:
+            for player in self.players():
+                if player.is_mill():
+                    self._win = True
+        if self._phase == "placing_pieces" and self.board().pieces_num() == 12:
+            not_full_board = False
+            for point in self.board().points_list():
+                if not point.owner():
+                    not_full_board = True
+            if not_full_board is False:
+                self._win = True
+        elif self._phase == "flying":
+            for player in self.players():
+                if not player.possible_fly_moves(self.board()):
+                    self._win = True
 
-    """ reveal winner
-    """
+
+
+    def reveal_winner(self):
+        if self.board().pieces_num() == 12 and self._phase == "placing_pieces":
+            return None
+        if len(self.player2.occupied()) > len(self.player1.occupied()):
+            return self.player2
+        else:
+            return self.player1
 
     def make_move(self, player):
         """eneter coords
@@ -124,18 +170,17 @@ class Game:
             self.place_piece(player)
         if self._phase == "moving":
             print(
-                f'Player {player.id()} move\nEnter coordinates to pick a piece you want to move:')
+                f'Player {player.id()} move\n')
             self.move_piece(player)
         if self._phase == "flying":
             print(
-                f'Player {player.id()} move\nEnter coordinates to pick a piece you want to fly:')
+                f'Player {player.id()} move\n')
             self.move_piece(player, fly=True)
         # if game.check_mills:
         #     print("Pick players piece to remove:")
         #     coords = coords_input()
         #     game.remove(player, coords)
         #     print(game.board().print_board())
-
 
     def place_piece(self, player):
         coords = self.coords_input()
@@ -152,15 +197,19 @@ class Game:
     def move_piece(self, player, fly=False):
         moved = False
         while not moved:
-            coords1 = self.coords_input()
             try:
+                if fly:
+                    print('Enter coordinates to pick a piece you want to fly:')
+                else:
+                    print('Enter coordinates to pick a piece you want to move:')
+                coords1 = self.coords_input()
                 point1 = self.board().get_point(coords1)
             except CoordsOfNotActivePoint as e:
                 print(e)
                 continue
-            print("Enter coordinates of destination point:")
-            coords2 = self.coords_input()
             try:
+                print("Enter coordinates of destination point:")
+                coords2 = self.coords_input()
                 point2 = self.board().get_point(coords2)
                 player.move_piece(point1, point2, fly)
                 moved = True
@@ -175,11 +224,15 @@ class Game:
                 continue
 
     def coords_input(self):
-        pointrow = input("row:")
-        while not pointrow.isdigit():
+        try:
             pointrow = input("row:")
-        pointcol = input("col:")
-        while not pointrow.isdigit():
-            pointrow = input("row:")
-        coords = (int(pointrow), int(pointcol))
+            while not pointrow.isdigit():
+                pointrow = input("row:")
+            pointcol = input("col:")
+            while not pointrow.isdigit():
+                pointrow = input("row:")
+            coords = (int(pointrow), int(pointcol))
+        except ValueError:
+            print("Try again")
+            coords = self.coords_input()
         return coords
