@@ -1,4 +1,4 @@
-from classes import FreePointError, Player, Point, Board, ImpossibleMove, CoordsOfNotActivePoint
+from classes import FreePointError, Player, Board, ImpossibleMove, CoordsOfNotActivePoint
 from classes import PointOwnerError, PointInMillError, PointOccupiedError
 import os
 
@@ -17,6 +17,7 @@ class Game:
         self.player1 = Player(1)
         self.player2 = Player(2)
         self._win = False
+        self._draw = False
         self._phase = "placing_pieces"
         phases = ["placing_pieces", "moving", "flying"]
 
@@ -26,12 +27,14 @@ class Game:
     def win(self):
         return self._win
 
+    def draw(self):
+        return self._draw
+
     def set_phase(self, new_phase):
         self._phase = new_phase
 
     def players(self):
         return [self.player1, self.player2]
-
 
     def check_if_phase_moving(self):
         pieces_num = self.board().pieces_num()
@@ -116,33 +119,28 @@ class Game:
                 print("Last phase: flying")
 
     def check_win(self):
-        if self._phase == "moving":
-            for player in self.players():
-                if len(player.occupied()) == 2:
-                    self._win = True
-                if not player.possible_moves(self.board()):
-                    self._win = True
         if self.board().pieces_num() == 3:
             for player in self.players():
                 if player.is_mill():
                     self._win = True
-        if self._phase == "placing_pieces" and self.board().pieces_num() == 12:
+        elif self.board().pieces_num() == 12:
             not_full_board = False
             for point in self.board().points_list():
                 if not point.owner():
                     not_full_board = True
             if not_full_board is False:
-                self._win = True
-        elif self._phase == "flying":
-            for player in self.players():
-                if not player.possible_fly_moves(self.board()):
+                self._draw = True
+        for player in self.players():
+            if not self._phase == "placing_pieces":
+                if len(player.occupied()) == 2:
+                    self._win = True
+                if not player.possible_moves(self.board()):
                     self._win = True
 
-
-
     def reveal_winner(self):
-        if self.board().pieces_num() == 12 and self._phase == "placing_pieces":
-            return None
+        # if self.board().pieces_num() == 12 and self._phase == "placing_pieces":
+        #     return None
+
         if len(self.player2.occupied()) > len(self.player1.occupied()):
             return self.player2
         else:

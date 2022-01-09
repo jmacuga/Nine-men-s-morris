@@ -1,7 +1,4 @@
-
-from classes import Point, Player, Board, ImpossibleMove, CoordsOfNotActivePoint, PointOccupiedError
 from game import Game
-import pytest
 import os
 
 
@@ -17,7 +14,7 @@ def pick_mode():
     try:
         while not valid:
             game_mode = input("Mode number:")
-            if  not game_mode.isdigit():
+            if not game_mode.isdigit():
                 print("Wrong mode number, choose from given (1,2,3,4)\n")
                 continue
             elif not int(game_mode) in modes:
@@ -30,32 +27,31 @@ def pick_mode():
         pick_mode()
     return int(game_mode)
 
+
 def main():
-    clear = lambda: os.system('clear')
+    def clear(): return os.system('clear')
     clear()
     game_mode = pick_mode()
     game = Game(game_mode)
     board = game.board()
     clear()
     print(board.print_board())
-    while game.win() is False:
+    while game.win() is False and game.draw() is False:
         for player in game.players():
             clear()
             game.check_phase()
             game.make_move(player)
             game.check_mills(player)
             game.check_win()
-            if game.win() is True:
+            if game.win() or game.draw():
                 break
-    winner = game.reveal_winner()
     clear()
     print(board.print_board())
-    if not winner:
+    if game.draw():
         print("DRAW!!!")
     else:
+        winner = game.reveal_winner()
         print(f'Player {winner.id()} won!!! CONGRATULATIONS')
-
-
 
 
 if __name__ == "__main__":

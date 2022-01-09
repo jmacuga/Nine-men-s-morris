@@ -21,6 +21,7 @@ def moving_pieces():
     """
     pass
 
+
 def flying():
     """ 1. player1 flies a piece
         2. check win
