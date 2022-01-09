@@ -36,21 +36,21 @@ def main():
     board = game.board()
     clear()
     print(board.print_board())
-    while game.win() is False and game.draw() is False:
+    while game.win() is False:
         for player in game.players():
             clear()
             game.check_phase()
             game.make_move(player)
             game.check_mills(player)
             game.check_win()
-            if game.win() or game.draw():
+            if game.win():
                 break
     clear()
     print(board.print_board())
-    if game.draw():
+    winner = game.reveal_winner()
+    if not winner:
         print("DRAW!!!")
     else:
-        winner = game.reveal_winner()
         print(f'Player {winner.id()} won!!! CONGRATULATIONS')
 
 
