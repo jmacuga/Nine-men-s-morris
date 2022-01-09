@@ -1,4 +1,5 @@
 from tabulate import tabulate
+from random import choice
 
 
 class IncorrectCoordsError(Exception):
@@ -51,8 +52,6 @@ class Player:
         self._mills_list = []
         self._is_mill = False
         self._placed_num = 0
-# points may be redundant - winner is player who removes
-# opponents pieces to two or opponent cannot make legal move
 
     def id(self):
         return self._id
@@ -138,6 +137,31 @@ class Player:
                 if not nextpoint.owner():
                     fly_moves.append((point, nextpoint))
         return fly_moves
+
+
+class ComputerPlayer(Player):
+    def __init__(self, id):
+        super().__init__(id)
+
+    def random_place_piece(self, board):
+        posbl_points = [point for point in board.points_list()
+                        if not point.owner()]
+        point = choice(posbl_points)
+        self.place_piece(point)
+
+    def random_move(self, board, fly=False):
+        if fly:
+            point1, point2 = choice(self.possible_fly_moves(board))
+            self.move_piece(point1, point2, True)
+        else:
+            point1, point2 = choice(self.possible_moves(board))
+            self.move_piece(point1, point2)
+
+    def random_remove(self, board):
+        posbl_remove = [point for point in board.points_list()
+                        if point.owner() and not point.owner() == self]
+        point = choice(posbl_remove)
+        self.remove_opponents_piece(point)
 
 
 class Point:
