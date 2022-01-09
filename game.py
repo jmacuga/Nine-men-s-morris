@@ -235,7 +235,7 @@ class Game:
         if self._phase == "moving":
             player.random_move(self.board())
         if self._phase == "flying":
-            player.random_fly(True, self.board())
+            player.random_move(self.board(), fly=True)
 
 
     def check_computer_mills(self, player):

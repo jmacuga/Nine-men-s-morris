@@ -159,7 +159,7 @@ class ComputerPlayer(Player):
 
     def random_remove(self, board):
         posbl_remove = [point for point in board.points_list()
-                        if point.owner() and not point.owner() == self]
+                        if point.owner() and not point.owner() == self and not point.locked()]
         point = choice(posbl_remove)
         self.remove_opponents_piece(point)
 
@@ -193,7 +193,7 @@ class Point:
 
     def symbol(self):
         if not self.owner():
-            return []
+            return "•"
         elif self._owner.id() == 1:
             return "O"
         else:
@@ -358,7 +358,7 @@ class Board:
         return self._board_size
 
     def board(self):
-        board = [["-" for i in range(self._board_size)]
+        board = [[" " for i in range(self._board_size)]
                  for i in range(self._board_size)]
         for point in self._points_list:
             board[point.coord()[0]][point.coord()
