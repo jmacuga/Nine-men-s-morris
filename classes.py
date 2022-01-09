@@ -50,7 +50,7 @@ class Player:
         self._occupied = []
         self._mills_list = []
         self._is_mill = False
-        self.placed_num = 0
+        self._placed_num = 0
 # points may be redundant - winner is player who removes
 # opponents pieces to two or opponent cannot make legal move
 
@@ -66,10 +66,13 @@ class Player:
     def is_mill(self):
         return self._is_mill
 
+    def placed_num(self):
+        return self._placed_num
+
     def place_piece(self, point: "Point"):
         point.set_owner(self)
         self._occupied.append(point)
-        self.placed_num += 1
+        self._placed_num += 1
 
     def move_piece(self, point1: "Point", point2: 'Point', fly=False):
         # chceck if a point belongs to player,
