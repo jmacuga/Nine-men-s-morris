@@ -1,4 +1,4 @@
-from classes import FreePointError, Player, Board, ImpossibleMove, CoordsOfNotActivePoint
+from classes import ComputerPlayer, FreePointError, Player, Board, ImpossibleMove, CoordsOfNotActivePoint
 from classes import PointOwnerError, PointInMillError, PointOccupiedError
 import os
 
@@ -132,6 +132,10 @@ class Game:
 
     def reveal_winner(self):
         if len(self.player2.occupied()) == len(self.player1.occupied()):
+            if self.board().pieces_num() == 3:
+                for player in self.players():
+                    if player.is_mill():
+                        return player
             return None
         elif len(self.player2.occupied()) > len(self.player1.occupied()):
             return self.player2
@@ -166,11 +170,7 @@ class Game:
             print(
                 f'Player {player.id()} move\n')
             self.move_piece(player, fly=True)
-        # if game.check_mills:
-        #     print("Pick players piece to remove:")
-        #     coords = coords_input()
-        #     game.remove(player, coords)
-        #     print(game.board().print_board())
+
 
     def place_piece(self, player):
         coords = self.coords_input()
@@ -226,3 +226,27 @@ class Game:
             print("Try again")
             coords = self.coords_input()
         return coords
+
+
+    def computer_move(self, player):
+        print(self.board().print_board())
+        if self._phase == "placing_pieces":
+            player.random_place_piece(self.board())
+        if self._phase == "moving":
+            player.random_move(self.board())
+        if self._phase == "flying":
+            player.random_fly(True, self.board())
+
+
+    def check_computer_mills(self, player):
+        def clear(): return os.system('clear')
+        player.find_mills()
+        if player.is_mill():
+            clear()
+            print(self.board().print_board())
+            if self.board().pieces_num() == 3:
+                return
+            if not self.opponent_removable(player):
+                return
+            else:
+                player.random_remove(self.board())
