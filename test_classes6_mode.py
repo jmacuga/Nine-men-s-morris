@@ -34,3 +34,4 @@ def test_move_piece_imppossible_move():
         player1.move_piece(point00, point11)
     with pytest.raises(CoordsOfNotActivePoint):
         board.get_point((5, 5))
+
