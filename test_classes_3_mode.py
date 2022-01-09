@@ -1,6 +1,7 @@
-from classes import Point, Player, Board, Mode, ImpossibleMove, CoordsOfNotActivePoint
+# import sys
+# sys.path.append('../')
 from game import Game
-import pytest
+from classes import Player
 
 
 def test_place_piece():
@@ -10,6 +11,7 @@ def test_place_piece():
     player1 = Player(1)
     player1.place_piece(point00)
     assert point00._owner == player1
+
 
 def test_board():
     game = Game(1)
@@ -23,5 +25,3 @@ def test_board():
 ├────┼─────┼─────┼─────┤
 │ 2  │ []  │ []  │ []  │
 ╘════╧═════╧═════╧═════╛"""
-
-

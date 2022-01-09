@@ -1,6 +1,9 @@
-from classes import ImpossibleMove, FreePointError, Player, Point, Board, PointOccupiedError
+# import sys
+# sys.path.append('../')
+from classes import ImpossibleMove, Player
 import pytest
 from game import Game
+
 
 def test_move_piece_imppossible_move():
     game = Game(3)
@@ -11,6 +14,7 @@ def test_move_piece_imppossible_move():
     player1.place_piece(point00)
     with pytest.raises(ImpossibleMove):
         player1.move_piece(point00, point11)
+
 
 def test_print_board():
     game = Game(3)
@@ -32,4 +36,3 @@ def test_print_board():
 ├────┼─────┼─────┼─────┼─────┼─────┼─────┼─────┤
 │ 6  │ []  │  -  │  -  │ []  │  -  │  -  │ []  │
 ╘════╧═════╧═════╧═════╧═════╧═════╧═════╧═════╛"""
-

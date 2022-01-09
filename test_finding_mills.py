@@ -1,3 +1,5 @@
+# import sys
+# sys.path.append('../')
 from classes import Player, Board, PointInMillError
 from game import Game
 import pytest
@@ -50,7 +52,7 @@ def test_find_mills_eq_2():
     game = Game(4)
     board = game.board()
     point53 = board.get_point((5, 3))
-    point51 = board.get_point((5,1))
+    point51 = board.get_point((5, 1))
     point55 = board.get_point((5, 5))
     point43 = board.get_point((4, 3))
     point44 = board.get_point((4, 4))
@@ -151,7 +153,7 @@ def test_checking_last_mill():
     point11 = board.get_point((1, 1))
     point03 = board.get_point((0, 3))
     point06 = board.get_point((0, 6))
-    point30 = board.get_point((3,0))
+    point30 = board.get_point((3, 0))
     player1 = Player(1)
     assert player1.is_mill() == False
     player1.place_piece(point00)
@@ -160,7 +162,7 @@ def test_checking_last_mill():
     player1.place_piece(point06)
     player1.find_mills()
     assert player1.is_mill() == True
-    player1.move_piece(point00,point30)
+    player1.move_piece(point00, point30)
     assert player1.is_mill() == False
 
 
@@ -171,7 +173,7 @@ def test_checking_last_mill_2():
     point11 = board.get_point((1, 1))
     point03 = board.get_point((0, 3))
     point06 = board.get_point((0, 6))
-    point30 = board.get_point((3,0))
+    point30 = board.get_point((3, 0))
     point55 = board.get_point((5, 5))
     player1 = Player(1)
     player2 = Player(2)
@@ -185,3 +187,27 @@ def test_checking_last_mill_2():
     player1.place_piece(point30)
     player1.find_mills()
     assert player1.is_mill() == False
+
+
+def test_3_mode():
+    game = Game(1)
+    board = game.board()
+    point00 = board.get_point((0, 0))
+    point10 = board.get_point((1, 0))
+    point20 = board.get_point((2, 0))
+    point02 = board.get_point((0, 2))
+    point12 = board.get_point((1, 2))
+    point22 = board.get_point((2, 2))
+    player1 = Player(1)
+    player2 = Player(2)
+    assert player1.is_mill() == False
+    player1.place_piece(point00)
+    player1.place_piece(point20)
+    player1.place_piece(point22)
+    player2.place_piece(point10)
+    player2.place_piece(point02)
+    player2.place_piece(point12)
+    player1.find_mills()
+    player2.find_mills()
+    assert player1.is_mill() == False
+    assert player2.is_mill() == False

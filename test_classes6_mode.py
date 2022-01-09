@@ -1,6 +1,9 @@
-from classes import Point, Player, Board, Mode, ImpossibleMove, CoordsOfNotActivePoint
+# import sys
+# sys.path.append('../')
+from classes import Point, Player, Board, ImpossibleMove, CoordsOfNotActivePoint
 from game import Game
 import pytest
+
 
 def test_board():
     game = Game(2)
@@ -19,6 +22,7 @@ def test_board():
 │ 4  │ []  │  -  │ []  │  -  │ []  │
 ╘════╧═════╧═════╧═════╧═════╧═════╛"""
 
+
 def test_move_piece_imppossible_move():
     game = Game(2)
     board = game.board()
@@ -29,5 +33,4 @@ def test_move_piece_imppossible_move():
     with pytest.raises(ImpossibleMove):
         player1.move_piece(point00, point11)
     with pytest.raises(CoordsOfNotActivePoint):
-        board.get_point((5,5))
-
+        board.get_point((5, 5))

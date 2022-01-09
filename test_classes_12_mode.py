@@ -1,6 +1,8 @@
-from classes import ImpossibleMove, FreePointError, Player, Point, Board, PointOccupiedError
-import pytest
 from game import Game
+import pytest
+from classes import ImpossibleMove, FreePointError, Player, PointOccupiedError
+import sys
+sys.path.append('../')
 
 
 def test_print_board():
@@ -117,8 +119,8 @@ def test_move_piece():
     player1 = Player(1)
     player1.place_piece(point00)
     player1.move_piece(point00, point11)
-    assert point11._taken
-    assert not point00._taken
+    assert point11.owner()
+    assert not point00.owner()
     assert point11.owner() == player1
     assert point00.owner() == None
 
@@ -153,7 +155,7 @@ def test_remove_owner():
     point00.remove_owner()
     assert point00.owner() == None
     assert player1.occupied() == []
-    assert point00.taken() == False
+    assert not point00.owner()
 
 
 def test_fly_piece():
