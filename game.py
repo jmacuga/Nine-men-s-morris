@@ -17,7 +17,6 @@ class Game:
         self.player1 = Player(1)
         self.player2 = Player(2)
         self._win = False
-        self._draw = False
         self._phase = "placing_pieces"
         phases = ["placing_pieces", "moving", "flying"]
 
@@ -27,8 +26,8 @@ class Game:
     def win(self):
         return self._win
 
-    def draw(self):
-        return self._draw
+    def phase(self):
+        return self._phase
 
     def set_phase(self, new_phase):
         self._phase = new_phase
@@ -38,16 +37,17 @@ class Game:
 
     def check_if_phase_moving(self):
         pieces_num = self.board().pieces_num()
-        placed1 = self.player1.placed_num
-        placed2 = self.player2.placed_num
+        placed1 = self.player1.placed_num()
+        placed2 = self.player2.placed_num()
         if placed1 == pieces_num and placed2 == pieces_num:
             return True
         else:
             return False
 
-    def check_if_phase_flying(player1, player2):
-        if len(player2.occupied()) == 3 or len(player1.occupied()) == 3:
-            return True
+    def check_if_phase_flying(self):
+        for player in self.players():
+            if len(player.occupied()) == 3:
+                return True
         else:
             return False
 
@@ -66,7 +66,7 @@ class Game:
                 return
             print("YOU HAVE A MILLL CONGRATTTS SISSS")
             removed = False
-            if not self.player_removable(player):
+            if not self.opponent_removable(player):
                 print("But you cannot remove any of opponnets pieces :((")
                 input("Press Enter to continue")
             else:
@@ -91,7 +91,7 @@ class Game:
                         print(e)
                         continue
 
-    def player_removable(self, player):
+    def opponent_removable(self, player):
         if player == self.player1:
             other_player = self.player2
         else:
@@ -123,25 +123,17 @@ class Game:
             for player in self.players():
                 if player.is_mill():
                     self._win = True
-        elif self.board().pieces_num() == 12:
-            not_full_board = False
-            for point in self.board().points_list():
-                if not point.owner():
-                    not_full_board = True
-            if not_full_board is False:
-                self._draw = True
         for player in self.players():
             if not self._phase == "placing_pieces":
                 if len(player.occupied()) == 2:
                     self._win = True
-                if not player.possible_moves(self.board()):
-                    self._win = True
+            if not player.possible_moves(self.board()) and player.placed_num():
+                self._win = True
 
     def reveal_winner(self):
-        # if self.board().pieces_num() == 12 and self._phase == "placing_pieces":
-        #     return None
-
-        if len(self.player2.occupied()) > len(self.player1.occupied()):
+        if len(self.player2.occupied()) == len(self.player1.occupied()):
+            return None
+        elif len(self.player2.occupied()) > len(self.player1.occupied()):
             return self.player2
         else:
             return self.player1
