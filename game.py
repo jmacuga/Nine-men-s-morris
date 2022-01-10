@@ -1,6 +1,8 @@
 from classes import ComputerPlayer, FreePointError, Player, Board, ImpossibleMove, CoordsOfNotActivePoint
 from classes import PointOwnerError, PointInMillError, PointOccupiedError
 import os
+import copy
+import math
 
 
 class Game:
@@ -16,6 +18,8 @@ class Game:
         self._board = modes[mode_number][1]
         self.player1 = Player(1)
         self.player2 = Player(2)
+        self.computer_player = None
+        self.human_player = None
         self._win = False
         self._phase = "placing_pieces"
         phases = ["placing_pieces", "moving", "flying"]
@@ -171,7 +175,6 @@ class Game:
                 f'Player {player.id()} move\n')
             self.move_piece(player, fly=True)
 
-
     def place_piece(self, player):
         coords = self.coords_input()
         try:
@@ -227,16 +230,14 @@ class Game:
             coords = self.coords_input()
         return coords
 
-
     def computer_move(self, player):
         print(self.board().print_board())
         if self._phase == "placing_pieces":
-            player.random_place_piece(self.board())
+            player.best_place_piece(self.board())
         if self._phase == "moving":
-            player.random_move(self.board())
+            player.best_move(self.board())
         if self._phase == "flying":
-            player.random_move(self.board(), fly=True)
-
+            player.best_move(self.board(), fly=True)
 
     def check_computer_mills(self, player):
         def clear(): return os.system('clear')
@@ -250,3 +251,146 @@ class Game:
                 return
             else:
                 player.random_remove(self.board())
+
+    def score(self):
+        if self.human_player.is_mill():
+            return -10
+        if self.computer_player.is_mill():
+            return +10
+        if self.reveal_winner() == self.computer_player:
+            return +20
+        if self.reveal_winner() == self.human_player:
+            return -20
+        else:
+            return 0
+
+    def best_move(self):
+        best_score = -1000
+        if self._phase == "placing_pieces":
+            posbl_points = [point for point in self.board().points_list()
+                            if not point.owner()]
+            for point in posbl_points:
+                new_game = copy.deepcopy(self)
+                new_point = new_game.board().get_point(point.coord())
+                new_game.computer_player.place_piece(new_point)
+                score = new_game.minimax(4, -1000, +1000, False)
+                if score > best_score:
+                    best_score = score
+                    best_point = point
+            self.computer_player.place_piece(best_point)
+        if self._phase == "moving":
+            for point1, point2 in self.computer_player.possible_moves(self.board()):
+                new_game = copy.deepcopy(self)
+                new_point1 = new_game.board().get_point(point1.coord())
+                new_point2 = new_game.board().get_point(point2.coord())
+                new_game.computer_player.move_piece(new_point1, new_point2)
+                score = new_game.minimax(4, -1000, +1000, False)
+                if score > best_score:
+                    best_score = score
+                    best_point1 = point1
+                    best_point2 = point2
+            self.computer_player.move_piece(best_point1, best_point2)
+        if self._phase == "flying":
+            for point1, point2 in self.computer_player.possible_fly_moves(self.board()):
+                new_game = copy.deepcopy(self)
+                new_point1 = new_game.board().get_point(point1.coord())
+                new_point2 = new_game.board().get_point(point2.coord())
+                new_game.computer_player.move_piece(new_point1, new_point2, fly=True)
+                score = new_game.minimax(10, -2000, +2000, False)
+                if score > best_score:
+                    best_score = score
+                    best_point1 = point1
+                    best_point2 = point2
+            self.computer_player.move_piece(best_point1, best_point2, fly=True)
+
+    def minimax(self, depth, alpha, beta, maximizing):
+        if maximizing:
+            player = self.computer_player
+        else:
+            player = self.human_player
+        player.find_mills()
+        self.check_win()
+        if self.win() or player.is_mill() or not depth:
+            return self.score()
+        if maximizing:
+            if self._phase == "placing_pieces":
+                return self.minimax_phase1(depth, alpha, beta, True)
+            if self._phase == "moving":
+                return self.minimax_phase2(depth, alpha, beta, True)
+            if self._phase == "flying":
+                return self.minimax_phase2(depth, alpha, beta, True, fly=True)
+        else:
+            if self._phase == "placing_pieces":
+                return self.minimax_phase1(depth, alpha, beta, False)
+            if self._phase == "moving":
+                return self.minimax_phase2(depth, alpha, beta, False)
+            if self._phase == "flying":
+                return self.minimax_phase2(depth, alpha, beta, False, fly=True)
+
+
+    def minimax_phase1(self, depth, alpha, beta, maximizing):
+        if maximizing:
+            best_score = -2000
+            posbl_points = [point for point in self.board().points_list()
+                                    if not point.owner()]
+            for point in posbl_points:
+                new_game = copy.deepcopy(self)
+                new_point = new_game.board().get_point(point.coord())
+                new_game.computer_player.place_piece(new_point)
+                score = new_game.minimax(depth - 1, alpha, beta, False)
+                best_score = max(score, best_score)
+                alpha = max(alpha, score)
+                if beta <= alpha:
+                    break
+            return best_score
+        else:
+            best_score = 2000
+            posbl_points = [point for point in self.board().points_list()
+                                if not point.owner()]
+            for point in posbl_points:
+                new_game = copy.deepcopy(self)
+                new_point = new_game.board().get_point(point.coord())
+                new_game.human_player.place_piece(new_point)
+                score = new_game.minimax(depth - 1, alpha, beta, True)
+                best_score = min(score, best_score)
+                beta = min(beta, score)
+                if beta <= alpha:
+                    break
+            return best_score
+
+
+    def minimax_phase2(self, depth, alpha, beta, maximizing, fly=False):
+        if maximizing:
+            best_score = -2000
+            if fly:
+                posbl_moves =  self.computer_player.possible_fly_moves(self.board())
+            else:
+                posbl_moves =  self.computer_player.possible_moves(self.board())
+            for point1, point2 in posbl_moves:
+                new_game = copy.deepcopy(self)
+                new_point1 = new_game.board().get_point(point1.coord())
+                new_point2 = new_game.board().get_point(point2.coord())
+                new_game.computer_player.move_piece(new_point1, new_point2, fly)
+                score = new_game.minimax(depth - 1, alpha, beta, False)
+                best_score = max(score, best_score)
+                alpha = max(alpha, score)
+                if beta <= alpha:
+                    break
+            return best_score
+        else:
+            best_score = 2000
+            if fly:
+                posbl_moves =  self.human_player.possible_fly_moves(self.board())
+            else:
+                posbl_moves =  self.human_player.possible_moves(self.board())
+            for point1, point2 in posbl_moves:
+                new_game = copy.deepcopy(self)
+                new_point1 = new_game.board().get_point(point1.coord())
+                new_point2 = new_game.board().get_point(point2.coord())
+                new_game.human_player.move_piece(new_point1, new_point2)
+                score = new_game.minimax(depth - 1, alpha, beta, True)
+                best_score = min(score, best_score)
+                beta = min(beta, score)
+                if beta <= alpha:
+                    break
+            return best_score
