@@ -27,18 +27,21 @@ def pick_mode():
         pick_mode()
     return int(game_mode)
 
+
 def pick_player(game):
     print("Pick symbol you wanna play with (Enter O or X).'O' goes always first. ")
-    symbols = ["X","x", "O","o"]
+    symbols = ["X", "x", "O", "o"]
     symbol = input("symbol:")
     while symbol not in symbols:
         symbol = input("symbol:")
     if symbol == "O" or symbol == "o":
         game.player2 = ComputerPlayer(2)
         game.computer_player = game.player2
+        game.human_player = game.player1
     elif symbol == "X" or symbol == "x":
         game.player1 = ComputerPlayer(1)
         game.computer_player = game.player1
+        game.human_player = game.player2
 
 
 def main():
@@ -55,7 +58,7 @@ def main():
             clear()
             game.check_phase()
             if type(player) == ComputerPlayer:
-                game.computer_move(player)
+                game.best_move()
                 game.check_computer_mills(player)
                 game.check_win()
             else:
