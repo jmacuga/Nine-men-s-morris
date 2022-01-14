@@ -1,4 +1,5 @@
-from game import Game
+from game import Game, ComputerGame
+from classes import ComputerPlayer
 import os
 
 
@@ -28,21 +29,59 @@ def pick_mode():
     return int(game_mode)
 
 
+def pick_ai_mode():
+    yes_answers = ['y', 'yes']
+    no_answers = ['n', 'no']
+    print('Do you want to play with computer?[Y/N]')
+    answer = input().lower()
+    while answer not in yes_answers and answer not in  no_answers:
+        try:
+            print('Type "Yes" or "No"')
+            answer = input().lower()
+        except ValueError:
+            print('Sorry, try again')
+    if answer in yes_answers:
+        return True
+    else:
+        return False
+
+
+
+def pick_player():
+    print("Pick symbol you wanna play with (Enter O or X).'O' goes always first. ")
+    symbols = [ "x", "o"]
+    symbol = input("symbol:").lower()
+    while symbol not in symbols:
+        print("Enter O or X")
+        symbol = input("symbol:").lower
+    return symbol
+
+
 def main():
     def clear(): return os.system('clear')
     clear()
     game_mode = pick_mode()
-    game = Game(game_mode)
+    ai = pick_ai_mode()
+    if ai:
+        human_symbol = pick_player()
+        game = ComputerGame(game_mode, human_symbol)
+    else:
+        game = Game(game_mode)
     board = game.board()
     clear()
     print(board.print_board())
-    while game.win() is False:
+    while not game.win():
         for player in game.players():
             clear()
             game.check_phase()
-            game.make_move(player)
-            game.check_mills(player)
-            game.check_win()
+            if type(player) == ComputerPlayer:
+                game.best_move()
+                game.check_computer_mills(player)
+                game.check_win()
+            else:
+                game.make_move(player)
+                game.check_mills(player)
+                game.check_win()
             if game.win():
                 break
     clear()
