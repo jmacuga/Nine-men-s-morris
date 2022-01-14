@@ -16,8 +16,7 @@ class Game:
         self._board = modes[mode_number][1]
         self.player1 = Player(1)
         self.player2 = Player(2)
-        self.computer_player = None
-        self.human_player = None
+
         self._win = False
         self._phase = "placing_pieces"
         phases = ["placing_pieces", "moving", "flying"]
@@ -227,6 +226,19 @@ class Game:
             print("Try again")
             coords = self.coords_input()
         return coords
+class ComputerGame(Game):
+    def __init__(self, mode_number, human_symbol):
+        super().__init__(mode_number)
+        self.computer_player = None
+        if human_symbol == "o":
+            self.player2 = ComputerPlayer(2)
+            self.computer_player = self.player2
+            self.human_player = self.player1
+        else:
+            self.player1 = ComputerPlayer(1)
+            self.computer_player = self.player1
+            self.human_player = self.player2
+
 
     def check_computer_mills(self, player):
         def clear(): return os.system('clear')
