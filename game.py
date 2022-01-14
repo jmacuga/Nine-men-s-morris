@@ -1,7 +1,6 @@
 from classes import ComputerPlayer, FreePointError, Player, Board, ImpossibleMove, CoordsOfNotActivePoint
 from classes import PointOwnerError, PointInMillError, PointOccupiedError
 import os
-import copy
 
 
 class Game:
@@ -265,11 +264,12 @@ class Game:
             for point in posbl_points:
                 player.place_piece(point)
                 player.find_mills()
-                self.check_phase
-                score = self.minimax_phase1(4, alpha, beta, False)
+                self.check_phase()
+                score = self.minimax_phase1(5, alpha, beta, False)
                 point.remove_owner()
                 player._placed_num -= 1
                 player.find_mills()
+                self.set_phase("placing_pieces")
                 self._win = False
                 alpha = max(score, alpha)
                 if score > best_score:
@@ -277,14 +277,14 @@ class Game:
                     best_point = point
             player.place_piece(best_point)
         else:
-            if self._phase == "flying":
-                fly = True
+            fly = True if self._phase == "flying" else False
             for point1, point2 in player.possible_moves(self.board()):
                 player.move_piece(point1, point2, fly)
                 player.find_mills()
                 score = self.minimax_phase2(4, alpha, beta, True, fly)
                 player.move_piece(point2, point1, fly)
                 player.find_mills()
+                player._placed_num -= 2
                 self._win = False
                 alpha = max(score, alpha)
                 if score > best_score:
@@ -320,6 +320,7 @@ class Game:
             player._placed_num -= 1
             point.remove_owner()
             player.find_mills()
+            self.set_phase("placing_pieces")
             self._win = False
             if maximizing:
                 best_score = max(score, best_score)
@@ -351,6 +352,7 @@ class Game:
             score = self.minimax(depth - 1, alpha, beta, not maximizing)
             player.move_piece(point2, point1, fly)
             player.find_mills()
+            player._placed_num -= 2
             self._win = False
             if maximizing:
                 best_score = max(score, best_score)
