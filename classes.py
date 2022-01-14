@@ -164,6 +164,7 @@ class ComputerPlayer(Player):
         self.remove_opponents_piece(point)
 
 
+
 class Point:
     """ attributes:
 
@@ -366,8 +367,3 @@ class Board:
         self._board = board
         return board
 
-    def points6(self):
-        pass
-
-    def points3(self):
-        pass
