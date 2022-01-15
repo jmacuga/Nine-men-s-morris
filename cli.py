@@ -57,7 +57,7 @@ def pick_player():
     symbol = input("symbol:").lower()
     while symbol not in symbols:
         print("Enter O or X")
-        symbol = input("symbol:").lower
+        symbol = input("symbol:").lower()
     return symbol
 
 
