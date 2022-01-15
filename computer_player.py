@@ -31,10 +31,11 @@ class ComputerPlayer(Player):
             return +10
         if human.is_mill():
             return -10
-        if game.reveal_winner() == self:
-            return +10
-        if game.reveal_winner() == human:
-            return -10
+        if game.win():
+            if game.reveal_winner() == self:
+                return +10
+            if game.reveal_winner() == human:
+                return -10
         else:
             return 0
 
