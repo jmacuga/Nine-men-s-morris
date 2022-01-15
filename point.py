@@ -55,8 +55,7 @@ class Point:
         if not self._owner:
             self._owner = player
         else:
-            raise PointOccupiedError(
-                "This point is already occupied. Pick another one.")
+            raise PointOccupiedError()
 
     def remove_owner(self):
         if self._owner:
@@ -65,4 +64,4 @@ class Point:
             self._owner._occupied.remove(self)
             self._owner = None
         else:
-            raise FreePointError("Cannot remove a piece from this point")
+            raise FreePointError("There is no piece to remove from this point")
