@@ -36,6 +36,8 @@ class ComputerPlayer(Player):
                 return +10
             if game.reveal_winner() == human:
                 return -10
+            else:
+                return 5
         else:
             return 0
 
