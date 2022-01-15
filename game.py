@@ -80,7 +80,7 @@ class Game:
         if player == self.player1:
             other_player = self.player2
         else:
-            self.player1
+            other_player = self.player1
         for piece in other_player.occupied():
             if not piece.locked():
                 return True
