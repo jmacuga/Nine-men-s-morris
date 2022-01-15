@@ -1,6 +1,9 @@
-from classes import ComputerPlayer, FreePointError, Player, Board, ImpossibleMove, CoordsOfNotActivePoint
-from classes import PointOwnerError, PointInMillError, PointOccupiedError
 import os
+from board import Board
+from player import Player
+from computer_player import ComputerPlayer
+from exceptions import ComputerPlayer, FreePointError, ImpossibleMove
+from exceptions import CoordsOfNotActivePoint, PointOwnerError, PointInMillError, PointOccupiedError
 
 
 class Game:
@@ -226,6 +229,8 @@ class Game:
             print("Try again")
             coords = self.coords_input()
         return coords
+
+
 class ComputerGame(Game):
     def __init__(self, mode_number, human_symbol):
         super().__init__(mode_number)
@@ -238,7 +243,6 @@ class ComputerGame(Game):
             self.player1 = ComputerPlayer(1)
             self.computer_player = self.player1
             self.human_player = self.player2
-
 
     def check_computer_mills(self, player):
         def clear(): return os.system('clear')
