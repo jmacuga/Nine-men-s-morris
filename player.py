@@ -1,5 +1,4 @@
-from point import Point
-from exceptions import ImpossibleMove, PointInMillError, PointOwnerError
+from exceptions import ImpossibleMove, PointInMillError, PointOccupiedError, PointOwnerError
 
 
 class Player:
@@ -40,23 +39,26 @@ class Player:
     def placed_num(self):
         return self._placed_num
 
-    def place_piece(self, point: "Point"):
+    def place_piece(self, point):
         point.set_owner(self)
         self._occupied.append(point)
         self._placed_num += 1
 
-    def move_piece(self, point1: "Point", point2: 'Point', fly=False):
+    def move_piece(self, point1, point2, fly=False):
         # chceck if a point belongs to player,
         # if a move is possible
         # move point
         if point1.owner() == self:
-            if point1.coord() in point2.posbl_mov() or fly:
-                point1.remove_owner()
-                self.place_piece(point2)
+            if not point2.owner():
+                if point1.coord() in point2.posbl_mov() or fly:
+                    point1.remove_owner()
+                    self.place_piece(point2)
+                else:
+                    raise ImpossibleMove("These points are not connected.")
             else:
-                raise ImpossibleMove("These points are not connected.")
+                raise PointOccupiedError()
         else:
-            raise ImpossibleMove("This piece doesn't belong to this player.")
+            raise ImpossibleMove("This piece doesn't belong to you.")
 
     def remove_opponents_piece(self, piece):
         if piece in self.occupied():
@@ -109,3 +111,4 @@ class Player:
                 if not nextpoint.owner():
                     fly_moves.append((point, nextpoint))
         return fly_moves
+
