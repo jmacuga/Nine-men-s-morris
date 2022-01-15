@@ -65,3 +65,10 @@ class Point:
             self._owner = None
         else:
             raise FreePointError("There is no piece to remove from this point")
+
+    def is_blocked(self):
+        for point in self.posbl_mov():
+            if not point.owner():
+                return False
+        return True
+
