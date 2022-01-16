@@ -37,7 +37,8 @@ def pick_ai_mode():
     yes_answers = ['y', 'yes']
     no_answers = ['n', 'no']
     print('Do you want to play with computer?[Y/N]')
-    answer = input().lower()
+    answer = input()
+    answer.lower()
     while answer not in yes_answers and answer not in no_answers:
         try:
             print('Type "Yes" or "No"')
@@ -76,16 +77,16 @@ def make_move(game, board, player):
     if mill remov piece and print board
 
     """
-    print(board.print_board())
-    if game._phase == "Placing Pieces":
+    print(board())
+    if game.phase() == "Placing Pieces":
         print(
             f'Player {player.id()} move\nEnter coordinates to place a piece:')
         place_piece(board, player)
-    if game._phase == "Moving":
+    if game.phase() == "Moving":
         print(
             f'Player {player.id()} move\n')
         move_piece(board, player)
-    if game._phase == "Flying":
+    if game.phase() == "Flying":
         print(
             f'Player {player.id()} move\n')
         move_piece(board, player, fly=True)
@@ -98,12 +99,12 @@ def place_piece(board, player):
         player.place_piece(point)
     except CoordsOfNotActivePoint as e:
         clear()
-        print(board.print_board())
+        print(board)
         print(e)
         place_piece(board, player)
     except PointOccupiedError as e:
         clear()
-        print(board.print_board())
+        print(board)
         print(e)
         place_piece(board, player)
 
@@ -114,8 +115,8 @@ def coords_input():
         while not pointrow.isdigit():
             pointrow = input("row:")
         pointcol = input("col:")
-        while not pointrow.isdigit():
-            pointrow = input("row:")
+        while not pointcol.isdigit():
+            pointcol = input("col:")
         coords = (int(pointrow), int(pointcol))
     except ValueError:
         print("Try again")
@@ -136,18 +137,21 @@ def move_piece(board, player, fly=False):
             point1 = board.get_point(coords1)
             if point1 not in player.occupied():
                 clear()
-                print(board.print_board())
+                print(board)
                 raise ImpossibleMove(
                     "This point doesn't belong to you. Pick another one.")
+            elif point1.is_blocked(board) and not fly:
+                raise ImpossibleMove(
+                    "This point is blocked. Pick another one.")
             start_p = True
         except ImpossibleMove as e:
             clear()
-            print(board.print_board())
+            print(board)
             print(e)
             continue
         except CoordsOfNotActivePoint as e:
             clear()
-            print(board.print_board())
+            print(board)
             print(e)
             continue
     while not moved:
@@ -159,28 +163,28 @@ def move_piece(board, player, fly=False):
             moved = True
         except ImpossibleMove as e:
             clear()
-            print(board.print_board())
+            print(board)
             print(e)
             continue
         except PointOccupiedError as e:
             clear()
-            print(board.print_board())
+            print(board)
             print(e)
             continue
         except CoordsOfNotActivePoint as e:
             clear()
-            print(board.print_board())
+            print(board)
             print(e)
             continue
         except Exception:
             clear()
-            print(board.print_board())
+            print(board)
             move_piece(board, player, fly)
 
 
 def remove_piece(board, player):
     clear()
-    print(board.print_board())
+    print(board)
     print("YOU HAVE A MILL CONGRATULATIONS")
     # input("Press Enter to continue")
     removed = False
@@ -194,7 +198,7 @@ def remove_piece(board, player):
                 point = board.get_point(coords)
         except CoordsOfNotActivePoint as e:
             clear()
-            print(board.print_board())
+            print(board)
             print(e)
             continue
         try:
@@ -202,16 +206,16 @@ def remove_piece(board, player):
             removed = True
         except PointOwnerError as e:
             clear()
-            print(board.print_board())
+            print(board)
             print(e)
             continue
         except PointInMillError as e:
             clear()
-            print(board.print_board())
+            print(board)
             print(e)
             continue
         except FreePointError as e:
             clear()
-            print(board.print_board())
+            print(board))
             print(e)
             continue
