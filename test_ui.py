@@ -1,7 +1,6 @@
 # import sys
 # sys.path.append('../')
-from classes import Player, Point, Board
-from ui_game import pick_mode
+from cli import coords_input, pick_player, pick_mode, pick_ai_mode, place_piece, move_piece, make_move
 from game import Game
 import pytest
 import os
@@ -27,51 +26,63 @@ def test_pick_mode_float(monkeypatch):
 
 def test_place_piece(monkeypatch):
     game = Game(1)
+    board = game.board()
     player1 = game.player1
     palyer2 = game.player2
     inputs = iter(['a', 'a', '0', '34', 'adff', '0', '0'])
     monkeypatch.setattr('builtins.input', lambda _: next(inputs))
-    game.make_move(player1)
+    make_move(game, board, player1)
     assert game.board().print_board() == """╒════╤═════╤═════╤═════╕
 │    │  0  │  1  │  2  │
 ╞════╪═════╪═════╪═════╡
-│ 0  │  O  │ []  │ []  │
+│ 0  │  O  │  •  │  •  │
 ├────┼─────┼─────┼─────┤
-│ 1  │ []  │ []  │ []  │
+│ 1  │  •  │  •  │  •  │
 ├────┼─────┼─────┼─────┤
-│ 2  │ []  │ []  │ []  │
+│ 2  │  •  │  •  │  •  │
 ╘════╧═════╧═════╧═════╛"""
 
-# def test_check_phase(monkeypatch):
-#     game = Game(3)
-#     player1 = game.player1
-#     palyer2 = game.player2
-#     game.set_phase("moving")
+
+def test_pick_ai_mode(monkeypatch):
+    inputs = iter(['e', '9', '?', 'yes'])
+    monkeypatch.setattr('builtins.input', lambda _: next(inputs))
+    ai = pick_ai_mode()
+    assert ai
 
 
-# def moving():
-#     def clear(): return os.system('clear')
-#     clear()
-#     game = Game(2)
-#     player1 = game.player1
-#     player2 = game.player2
-#     board = game.board()
-#     point00 = board.get_point((0, 0))
-#     point02 = board.get_point((0, 2))
-#     point04 = board.get_point((0, 4))
-#     point11 = board.get_point((1, 1))
-#     player1.place_piece(point00)
-#     player1.place_piece(point02)
-#     player2.place_piece(point04)
-#     player2.place_piece(point11)
-#     game.set_phase("flying")
-#     print(board.print_board())
-#     while game.win() == False:
-#         for player in [player1, player2]:
-#             clear()
-#             game.check_phase()
-#             game.make_move(player)
-#             game.check_mills(player)
+def test_pick_player(monkeypatch):
+    inputs = iter(['e', '2', '%', '1', 'x'])
+    monkeypatch.setattr('builtins.input', lambda _: next(inputs))
+    symbol = pick_player()
+    assert symbol == 'x'
 
 
-# moving()
+def test_place_piece(monkeypatch):
+    inputs = iter(['e', '2', '%', '1'])
+    monkeypatch.setattr('builtins.input', lambda _: next(inputs))
+    game = Game(1)
+    player = game.player1
+    board = game.board()
+    point21 = board.get_point((2, 1))
+    place_piece(board, player)
+    assert point21 in player.occupied()
+
+
+def test_place_piece(monkeypatch):
+    inputs = iter(['e', '2', '%', '1', 'x', '2', '1', '30', '70', '2', '2'])
+    monkeypatch.setattr('builtins.input', lambda _: next(inputs))
+    game = Game(1)
+    player = game.player1
+    board = game.board()
+    point21 = board.get_point((2, 1))
+    point22 = board.get_point((2, 2))
+    place_piece(board, player)
+    place_piece(board, player)
+    assert point21 in player.occupied()
+    assert point22 in player.occupied()
+
+
+def test_cords_input(monkeypatch):
+    inputs = iter(['e', '2', '%', 'ggg', 'x', 'x', '3'])
+    monkeypatch.setattr('builtins.input', lambda _: next(inputs))
+    assert coords_input() == ((2, 3))

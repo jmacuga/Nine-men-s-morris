@@ -1,6 +1,8 @@
-from classes import Player, Point, FreePointError, PointOccupiedError, ImpossibleMove
 from game import Game
 import pytest
+from player import Player
+from point import Point
+from exceptions import FreePointError, PointOccupiedError, ImpossibleMove
 
 
 def test_player_class():
@@ -16,7 +18,7 @@ def test_point():
     assert point00.posbl_mov()[0] == (0, 3)
     assert len(point00.posbl_mov()) == 3
     assert not point00.owner()
-    assert point00.symbol() == []
+    assert point00.symbol() == '•'
 
 
 def test_point_posbl_mov():
@@ -154,16 +156,14 @@ def test_player_possible_moves():
 def test_player_placed_num():
     game = Game(2)
     board = game.board()
-    points= [board.get_point((0, 0)),
-               board.get_point((0, 4)),
-               board.get_point((1, 1)),
-               board.get_point((1, 2)),
-               board.get_point((2, 1)),
-               board.get_point((2, 3)),
-               ]
+    points = [board.get_point((0, 0)),
+              board.get_point((0, 4)),
+              board.get_point((1, 1)),
+              board.get_point((1, 2)),
+              board.get_point((2, 1)),
+              board.get_point((2, 3)),
+              ]
     player1 = game.player1
     for point in points:
         player1.place_piece(point)
     assert player1.placed_num() == 6
-
-

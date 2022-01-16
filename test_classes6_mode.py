@@ -1,7 +1,8 @@
 # import sys
 # sys.path.append('../')
-from classes import Point, Player, Board, ImpossibleMove, CoordsOfNotActivePoint
 from game import Game
+from player import Player
+from exceptions import ImpossibleMove, CoordsOfNotActivePoint
 import pytest
 
 
@@ -11,15 +12,15 @@ def test_board():
     assert board.print_board() == """╒════╤═════╤═════╤═════╤═════╤═════╕
 │    │  0  │  1  │  2  │  3  │  4  │
 ╞════╪═════╪═════╪═════╪═════╪═════╡
-│ 0  │ []  │  -  │ []  │  -  │ []  │
+│ 0  │  •  │     │  •  │     │  •  │
 ├────┼─────┼─────┼─────┼─────┼─────┤
-│ 1  │  -  │ []  │ []  │ []  │  -  │
+│ 1  │     │  •  │  •  │  •  │     │
 ├────┼─────┼─────┼─────┼─────┼─────┤
-│ 2  │ []  │ []  │  -  │ []  │ []  │
+│ 2  │  •  │  •  │     │  •  │  •  │
 ├────┼─────┼─────┼─────┼─────┼─────┤
-│ 3  │  -  │ []  │ []  │ []  │  -  │
+│ 3  │     │  •  │  •  │  •  │     │
 ├────┼─────┼─────┼─────┼─────┼─────┤
-│ 4  │ []  │  -  │ []  │  -  │ []  │
+│ 4  │  •  │     │  •  │     │  •  │
 ╘════╧═════╧═════╧═════╧═════╧═════╛"""
 
 
@@ -34,4 +35,3 @@ def test_move_piece_imppossible_move():
         player1.move_piece(point00, point11)
     with pytest.raises(CoordsOfNotActivePoint):
         board.get_point((5, 5))
-

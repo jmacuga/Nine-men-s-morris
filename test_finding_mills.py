@@ -1,8 +1,9 @@
 # import sys
 # sys.path.append('../')
-from classes import Player, Board, PointInMillError
 from game import Game
 import pytest
+from player import Player
+from exceptions import PointInMillError
 
 
 def test_find_mils():

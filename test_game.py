@@ -30,13 +30,13 @@ def test_check_phase_moving():
     assert player2.placed_num() == 6
     assert game.check_if_phase_moving()
     game.check_phase()
-    assert game._phase == "moving"
+    assert game._phase == "Moving"
 
 
 def test_phase_flying_mode3():
     game = Game(3)
     board = game.board()
-    game.set_phase("moving")
+    game.set_phase("Moving")
     player1 = game.player1
     player2 = game.player2
     points1 = [board.get_point((0, 0)),
@@ -51,13 +51,13 @@ def test_phase_flying_mode3():
         player2.place_piece(point)
     assert game.check_if_phase_flying()
     game.check_phase()
-    assert game.phase() == "flying"
+    assert game.phase() == "Flying"
 
 
 def test_check_phase_flyng_mode2():
     game = Game(2)
     board = game.board()
-    game.set_phase("moving")
+    game.set_phase("Moving")
     player1 = game.player1
     player2 = game.player2
     points1 = [board.get_point((0, 0)),
@@ -72,7 +72,7 @@ def test_check_phase_flyng_mode2():
         player2.place_piece(point)
     assert game.check_if_phase_flying()
     game.check_phase()
-    assert game.phase() == "moving"
+    assert game.phase() == "Moving"
 
 
 def test_opponent_removable():
@@ -111,14 +111,15 @@ def test_check_win_mode_1():
     game.check_win()
     assert game.win()
 
+
 def test_check_win_mode_2():
     game = Game(2)
     board = game.board()
-    game.set_phase("moving")
+    game.set_phase("Moving")
     player1 = game.player1
     player2 = game.player2
     points1 = [board.get_point((0, 0)),
-               board.get_point((0, 4)),]
+               board.get_point((0, 4)), ]
     points2 = [board.get_point((0, 2)),
                board.get_point((2, 0)),
                board.get_point((3, 1))]
@@ -129,6 +130,7 @@ def test_check_win_mode_2():
     game.check_win()
     assert game.win()
     assert game.reveal_winner() == player2
+
 
 def test_check_win_draw_mode_2():
     game = Game(2)
@@ -157,4 +159,39 @@ def test_check_win_draw_mode_2():
     assert not player1.possible_moves(board)
     assert game.win()
     assert not game.reveal_winner()
+
+
+def test_check_mills_mode_1():
+    game = Game(1)
+    board = game.board()
+    points1 = [board.get_point((0, 0)),
+               board.get_point((0, 1)),
+               board.get_point((0, 2)),
+               ]
+    player1 = game.player1
+    for point in points1:
+        player1.place_piece(point)
+    assert game.check_mills(player1) is False
+
+
+def check_mills_player_not_removable():
+    game = Game(2)
+    board = game.board()
+    points1 = [board.get_point((0, 0)),
+               board.get_point((0, 2)),
+               board.get_point((0, 4)),
+               ]
+    points2 = [board.get_point((1, 1)),
+               board.get_point((1, 2)),
+               board.get_point((1, 3)),
+               ]
+    player1 = game.player1
+    player2 = game.player2
+    for point in points1:
+        player1.place_piece(point)
+    for point in points2:
+        player2.place_piece(point)
+    player1.find_mills()
+    assert game.opponent_removable(player2) is False
+    assert game.check_mills(player2) is False
 

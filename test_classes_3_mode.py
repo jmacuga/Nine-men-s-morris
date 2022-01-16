@@ -1,7 +1,7 @@
 # import sys
 # sys.path.append('../')
 from game import Game
-from classes import Player
+from player import Player
 
 
 def test_place_piece():
@@ -19,10 +19,9 @@ def test_board():
     assert board.print_board() == """╒════╤═════╤═════╤═════╕
 │    │  0  │  1  │  2  │
 ╞════╪═════╪═════╪═════╡
-│ 0  │ []  │ []  │ []  │
+│ 0  │  •  │  •  │  •  │
 ├────┼─────┼─────┼─────┤
-│ 1  │ []  │ []  │ []  │
+│ 1  │  •  │  •  │  •  │
 ├────┼─────┼─────┼─────┤
-│ 2  │ []  │ []  │ []  │
+│ 2  │  •  │  •  │  •  │
 ╘════╧═════╧═════╧═════╛"""
-
