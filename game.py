@@ -1,16 +1,16 @@
-import os
 from board import Board
 from player import Player
 from computer_player import ComputerPlayer
-
+from point_generate import generate_points
 
 class Game:
 
     def __init__(self, mode_number, ai=False, symbol=None):
-        modes = {1: (False, Board(3, 3)),
-                 2: (False, Board(6, 5)),
-                 3: (True, Board(9, 7)),
-                 4: (True, Board(12, 7))}
+        points_list = generate_points(mode_number)
+        modes = {1: (False, Board(3, 3, points_list)),
+                 2: (False, Board(6, 5, points_list)),
+                 3: (True, Board(9, 7, points_list)),
+                 4: (True, Board(12, 7, points_list))}
         self._fly = modes[mode_number][0]
         self._board = modes[mode_number][1]
         self.player1 = Player(1)
@@ -26,7 +26,6 @@ class Game:
     def set_human_symbol(self, symbol):
         if symbol == "o" or symbol == "0":
             self.player2 = ComputerPlayer(2)
-
         else:
             self.player1 = ComputerPlayer(1)
 
