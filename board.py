@@ -25,7 +25,7 @@ class Board:
     def points_list(self):
         return self._points_list
 
-    def print_board(self):
+    def __str__(self):
         headers = ""
         for i in range(self._board_size):
             headers += str(i)

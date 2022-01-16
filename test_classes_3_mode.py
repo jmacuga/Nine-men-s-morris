@@ -16,7 +16,7 @@ def test_place_piece():
 def test_board():
     game = Game(1)
     board = game.board()
-    assert board.print_board() == """╒════╤═════╤═════╤═════╕
+    assert str(board) == """╒════╤═════╤═════╤═════╕
 │    │  0  │  1  │  2  │
 ╞════╪═════╪═════╪═════╡
 │ 0  │  •  │  •  │  •  │

@@ -20,7 +20,7 @@ def test_move_piece_imppossible_move():
 def test_print_board():
     game = Game(3)
     board = game.board()
-    assert board.print_board() == """╒════╤═════╤═════╤═════╤═════╤═════╤═════╤═════╕
+    assert str(board) == """╒════╤═════╤═════╤═════╤═════╤═════╤═════╤═════╕
 │    │  0  │  1  │  2  │  3  │  4  │  5  │  6  │
 ╞════╪═════╪═════╪═════╪═════╪═════╪═════╪═════╡
 │ 0  │  •  │     │     │  •  │     │     │  •  │

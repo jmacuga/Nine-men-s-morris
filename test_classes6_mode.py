@@ -9,7 +9,7 @@ import pytest
 def test_board():
     game = Game(2)
     board = game.board()
-    assert board.print_board() == """╒════╤═════╤═════╤═════╤═════╤═════╕
+    assert str(board) == """╒════╤═════╤═════╤═════╤═════╤═════╕
 │    │  0  │  1  │  2  │  3  │  4  │
 ╞════╪═════╪═════╪═════╪═════╪═════╡
 │ 0  │  •  │     │  •  │     │  •  │

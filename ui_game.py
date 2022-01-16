@@ -16,7 +16,7 @@ def main():
     human = [p for p in game.players() if type(p) != ComputerPlayer][0]
     board = game.board()
     clear()
-    print(board.print_board())
+    print(board)
     while not game.win():
         for player in game.players():
             clear()
@@ -33,7 +33,7 @@ def main():
             if game.win():
                 break
     clear()
-    print(board.print_board())
+    print(board)
     winner = game.reveal_winner()
     if not winner:
         print("DRAW!!!")
