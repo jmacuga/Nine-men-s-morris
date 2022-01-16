@@ -9,6 +9,7 @@ def main():
     clear()
     game_mode = pick_mode()
     ai = pick_ai_mode()
+    symbol = None
     if ai:
         symbol = pick_player()
     game = Game(game_mode, ai, symbol)

@@ -50,8 +50,6 @@ class Player:
         # move point
         if point1.owner() != self:
             raise ImpossibleMove("This piece doesn't belong to you.")
-        elif point1.is_blocked() and not fly:
-            raise ImpossibleMove("This point is blocked. Pick another one.")
         elif point2.owner():
             raise PointOccupiedError()
         elif not point1.coord() in point2.posbl_mov() and not fly:
