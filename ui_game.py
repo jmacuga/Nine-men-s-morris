@@ -1,7 +1,7 @@
-from game import Game
-from computer_player import ComputerPlayer
+from classes.game import Game
+from classes.computer_player import ComputerPlayer
 import os
-from cli import pick_ai_mode, pick_player, make_move, remove_piece, pick_mode
+from classes.cli import pick_ai_mode, pick_player, make_move, remove_piece, pick_mode
 
 
 def main():

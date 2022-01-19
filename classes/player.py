@@ -1,23 +1,45 @@
-from exceptions import ImpossibleMove, PointInMillError, PointOccupiedError, PointOwnerError
+from classes.exceptions import ImpossibleMove, PointInMillError, PointOccupiedError, PointOwnerError
 
 
 class Player:
-    """ attributes:
+    """
+    class representing player
 
-        id
-        points
+    Attributtes
+    ----------
+    id : int
+    occupied : list
+        list of players pieces as occupied points on board
+    mills_list : list
+        list of lists of points in one mill
+    is_mill : bool
+        true if recent move provided a mill
+    placed_num : int
+        number of placed pieces
 
-        methods:
+    Methods
+    -------
 
-        place a piece
-        # occupied intersections
-        move a piece
-        # remove an opponent's piece
-        fly a piece
+    id
+    occupied
+    mills_list
+    is_mill
+    placed_num
+    place_piece(point)
+        places piece on given point
+    move_piece(point1, point2)
+        moves piece from point1 to point2
+    remove_oppponents_piece(point)
+        removes piece from given point
+    find_mills
+        finds mills in occupied points and adds them to mills_list
+    possible_moves(board)
+        returns possible moves of the occupied points
+    possible_fly_moves(board)
+        returns possible moves of the occupied points in flying phase
+    """
 
-        """
-
-    def __init__(self, id):
+    def __init__(self, id: int):
         self._id = id
         self._occupied = []
         self._mills_list = []
@@ -49,40 +71,33 @@ class Player:
         # if a move is possible
         # move point
         if point1.owner() != self:
-            raise ImpossibleMove("This piece doesn't belong to you.")
+            raise ImpossibleMove()
         elif point2.owner():
             raise PointOccupiedError()
         elif not point1.coord() in point2.posbl_mov() and not fly:
-            raise ImpossibleMove("These points are not connected.")
+            raise ImpossibleMove()
         else:
             point1.remove_owner()
             self.place_piece(point2)
 
-    def remove_opponents_piece(self, piece):
-        if piece in self.occupied():
-            raise PointOwnerError("You can only remove an oponent's piece")
-        if piece.locked():
-            raise PointInMillError("This point is in mill")
+    def remove_opponents_piece(self, point):
+        if point in self.occupied():
+            raise PointOwnerError()
+        if point.locked():
+            raise PointInMillError()
         else:
-            piece.remove_owner()
+            point.remove_owner()
 
     def find_mills(self):
-        """find all mills
-        check
-        -if at least 3 points in player's points are connected
-        -if connected points are in the same line
-
-        if list of mills changed and tehre is new mill-- > set  is mill true
-
-        """
+        """finds all players mills, locks points and appends to mills_list."""
         mills = []
         for point1 in self.occupied():
-            connect_list = [point2 for point2 in self.occupied(
-            ) if point1.coord() in point2.posbl_mov()]
+            connect_list = [point2 for point2 in self.occupied()
+                            if point1.coord() in point2.posbl_mov()]
             if len(connect_list) >= 2:
                 for i in range(2):
-                    coords_match = [point for point in connect_list if point.coord()[
-                        i] == point1.coord()[i]]
+                    coords_match = [point for point in connect_list
+                                    if point.coord()[i] == point1.coord()[i]]
                     if len(coords_match) == 2:
                         coords_match.append(point1)
                         mills.append(coords_match)
@@ -94,7 +109,7 @@ class Player:
             self._is_mill = False
         self._mills_list = mills
 
-    def possible_moves(self, board):
+    def possible_moves(self, board) -> list:
         moves = []
         for point in self.occupied():
             for nextpoint in board.points_list():
@@ -102,7 +117,7 @@ class Player:
                     moves.append((point, nextpoint))
         return moves
 
-    def possible_fly_moves(self, board):
+    def possible_fly_moves(self, board) -> list:
         fly_moves = []
         for point in self.occupied():
             for nextpoint in board.points_list():

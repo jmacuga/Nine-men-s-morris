@@ -1,5 +1,5 @@
-from game import Game
-from player import Player
+from classes.game import Game
+from classes.player import Player
 
 
 def test_print_board():

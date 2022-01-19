@@ -1,7 +1,7 @@
 # import sys
-# sys.path.append('../')
-from game import Game
-from player import Player
+# sys.path.append(".")
+from classes.game import Game
+from classes.player import Player
 
 
 def test_place_piece():

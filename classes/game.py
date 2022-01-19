@@ -1,9 +1,50 @@
-from board import Board
-from player import Player
-from computer_player import ComputerPlayer
-from point_generate import generate_points
+from classes.board import Board
+from classes.player import Player
+from classes.computer_player import ComputerPlayer
+from classes.point_generate import generate_points
+
 
 class Game:
+    """class representing state of game
+
+    Attributes:
+    ----------
+    points_list
+        list of active points passed to the board
+    ai
+        true if gameplay is in ai mode(default=False)
+    sumbol
+        symbol of human player on the board(default=None)
+    win
+        true if game is won
+    phase
+        current game phase [Placing pieces, Moving, Flying]
+
+    Methods
+    -------
+    get_computer_player()
+        generates computer player if game is in ai mode
+    board()
+    win()
+    pahse()
+    set_phase()
+    players()
+    check_if_phase_moving()
+        returns true if hase is moving
+    check_if_phase_flying()
+        returns true if hase is flying
+    check_mills(players)
+        returns true if one of the players has a mill
+        and is able to remove opponrnt's piece
+    opponent_rmeovable(player)
+        returns true if player is able ot remove opponent's piece
+    check_phase()
+        checks phase and sets game to next phase
+    check_win()
+        sets win to true if game if won
+    reveal_winner()
+        returns winner player, if there is a draw returns None
+    """
 
     def __init__(self, mode_number, ai=False, symbol=None):
         points_list = generate_points(mode_number)
@@ -15,16 +56,15 @@ class Game:
         self._board = modes[mode_number][1]
         self.player1 = Player(1)
         self.player2 = Player(2)
-        self.computer_player = None
-        self.human_player = None
+        self._symbol = symbol
         if ai:
-            self.set_human_symbol(symbol)
+            self.get_computer_player()
         self._win = False
         self._phase = "Placing Pieces"
         phases = ["Placing Pieces", "Moving", "Flying"]
 
-    def set_human_symbol(self, symbol):
-        if symbol == "o" or symbol == "0":
+    def get_computer_player(self):
+        if self._symbol == "o" or self._symbol == "0":
             self.player2 = ComputerPlayer(2)
         else:
             self.player1 = ComputerPlayer(1)
@@ -61,11 +101,6 @@ class Game:
             return False
 
     def check_mills(self, player):
-        """
-        input
-        check
-        remove
-        print board"""
         player.find_mills()
         if player.is_mill():
             if self.board().pieces_num() == 3:
@@ -88,11 +123,6 @@ class Game:
         return False
 
     def check_phase(self):
-        """check if phase is still valid
-        if not  -> change phase if possible in mode
-        phase 1: until both players placed pieces pieces_num times
-        phase 2: until 1 of players has 3 pieces left
-        phase 3 : until one of plyers has 2 pieces left"""
         if self._phase == "Placing Pieces":
             if self.check_if_phase_moving():
                 self.set_phase("Moving")

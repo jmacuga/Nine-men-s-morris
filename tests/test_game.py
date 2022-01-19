@@ -1,7 +1,4 @@
-
-from game import Game
-# import sys
-# sys.path.append('../')
+from classes.game import Game
 
 
 def test_check_phase_moving():
@@ -194,4 +191,3 @@ def check_mills_player_not_removable():
     player1.find_mills()
     assert game.opponent_removable(player2) is False
     assert game.check_mills(player2) is False
-

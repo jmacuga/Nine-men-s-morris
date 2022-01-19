@@ -1,8 +1,8 @@
 import json
-from point import Point
+from classes.point import Point
 
 def generate_points(mode):
-    with open("mode_points.json", 'r') as file_handle:
+    with open("classes/mode_points.json", 'r') as file_handle:
         data = json.load(file_handle)
         points_list = []
         for point in data[str(mode)]:

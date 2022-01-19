@@ -1,8 +1,10 @@
-from game import Game
+
+
+from classes.game import Game
 import pytest
-from player import Player
-from point import Point
-from exceptions import FreePointError, PointOccupiedError, ImpossibleMove
+from classes.player import Player
+from classes.point import Point
+from classes.exceptions import FreePointError, PointOccupiedError, ImpossibleMove
 
 
 def test_player_class():

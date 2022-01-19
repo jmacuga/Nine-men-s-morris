@@ -1,4 +1,4 @@
-from player import Player
+from classes.player import Player
 from random import choice
 
 class ComputerPlayer(Player):

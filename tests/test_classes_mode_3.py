@@ -1,8 +1,8 @@
 # import sys
 # sys.path.append('../')
-from game import Game
-from player import Player
-from exceptions import ImpossibleMove
+from classes.game import Game
+from classes.player import Player
+from classes.exceptions import ImpossibleMove
 import pytest
 
 
