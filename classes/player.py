@@ -19,7 +19,6 @@ class Player:
 
     Methods
     -------
-
     id
     occupied
     mills_list

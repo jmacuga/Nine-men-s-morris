@@ -10,20 +10,20 @@ class Board:
     Atrruibutes
     -----------
     pieces_num: int
-        number of pieces per player in game mode
+        Number of pieces per player in game mode.
     board_size : int
-        size of the board in the game mode
+        Size of the board in the game mode.
     points_list : list
-        list of active points on the board
+        List of active points on the board.
     points_coord_dict : dict
-            dictionary where keys are coordinates, values are points
+        Dictionary where keys are coordinates, values are points.
 
     Methods
     -------
-        points_list()
-            returns points list
-        get_point(coord)
-            returs points with given coordinates
+    points_list()
+        Return points list.
+    get_point(coord)
+        Return points with given coordinates.
     """
 
     def __init__(self,  pieces_num, board_size, points_list):
@@ -31,12 +31,11 @@ class Board:
         Parameters
         ----------
         pieces_num: int
-            number of pieces per player in game mode
+            Number of pieces per player in game mode.
         board_size : int
-            size of the board in the game mode
+            Size of the board in the game mode.
         points_list : list
-            list of active points on the board
-
+            List of active points on the board.
         """
         self._pieces_num = pieces_num
         self._board_size = board_size
@@ -62,7 +61,7 @@ class Board:
                         showindex=True, numalign="center", stralign="center")
 
     def get_point(self, coord: tuple) -> Point:
-        """Returns point of given coordinates.
+        """Return point of given coordinates.
 
         Parameters
         ----------
@@ -87,10 +86,7 @@ class Board:
         return self._points_coord_dict[coord]
 
     def board(self) -> list:
-        """Generates list of symbols for each point on the board.
-
-        Makes empty board and fills it with symbols of points.
-        """
+        """Generate list of symbols for each point on the board."""
         board = [[" " for i in range(self._board_size)]
                  for i in range(self._board_size)]
         for point in self._points_list:

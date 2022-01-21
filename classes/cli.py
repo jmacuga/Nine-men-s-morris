@@ -8,7 +8,7 @@ def clear(): return os.system('clear')
 
 
 def pick_mode():
-    """player enters mode"""
+    """get game mode from user"""
     print("""Choose Game Mode
     1 : Three men's morris
     2 : Six men's morris
@@ -59,24 +59,11 @@ def pick_player():
 
 
 def make_move(game, board, player):
-    """eneter coords
-    check coords
-    make move
-        move - depending on phase
-        if phase 1:
-            place piece
-        if phase 2:
-            move piece
-        if phase 3:
-            fly piece
-    print boards
-    if mill remov piece and print board
-
-    """
+    """make move depending on phase"""
     print(board)
     if game.phase() == "Placing Pieces":
         print(
-            f'Player {player.id()} move\nEnter coordinates to place a piece:')
+            f'Player {player.id()} move\n')
         place_piece(board, player)
     if game.phase() == "Moving":
         print(
@@ -89,6 +76,7 @@ def make_move(game, board, player):
 
 
 def place_piece(board, player):
+    print('Enter coordinates to place a piece:')
     coords = coords_input()
     try:
         point = board.get_point(coords)
