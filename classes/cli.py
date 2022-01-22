@@ -4,11 +4,12 @@ from classes.exceptions import CoordsOfNotActivePoint, ImpossibleMove, PointOccu
 from classes.exceptions import PointOwnerError, PointInMillError, FreePointError
 
 
-def clear(): return os.system('clear')
+def clear():
+    return os.system('clear')
 
 
 def pick_mode():
-    """player enters mode"""
+    """Get game mode from user depending on board size."""
     print("""Choose Game Mode
     1 : Three men's morris
     2 : Six men's morris
@@ -34,6 +35,7 @@ def pick_mode():
 
 
 def pick_ai_mode():
+    """Get ai mode activation fro user."""
     yes_answers = ['y', 'yes']
     no_answers = ['n', 'no']
     print('Do you want to play with computer?[Y/N]')
@@ -48,6 +50,7 @@ def pick_ai_mode():
 
 
 def pick_player():
+    """Get symbol played by user."""
     print(
         "Pick symbol you want to play with [X/O].\nNote 'O' goes always first.")
     symbols = ["x", "o", "0"]
@@ -59,24 +62,21 @@ def pick_player():
 
 
 def make_move(game, board, player):
-    """eneter coords
-    check coords
-    make move
-        move - depending on phase
-        if phase 1:
-            place piece
-        if phase 2:
-            move piece
-        if phase 3:
-            fly piece
-    print boards
-    if mill remov piece and print board
+    """Make move depending on phase.
 
+    PArameters
+    ----------
+    game : Game
+        Current game.
+    board : Board
+        Current game board.
+    player : Player
+        Player who is making move.
     """
     print(board)
     if game.phase() == "Placing Pieces":
         print(
-            f'Player {player.id()} move\nEnter coordinates to place a piece:')
+            f'Player {player.id()} move\n')
         place_piece(board, player)
     if game.phase() == "Moving":
         print(
@@ -89,6 +89,14 @@ def make_move(game, board, player):
 
 
 def place_piece(board, player):
+    """Place piece on board.
+
+    Parameters
+    ----------
+    player : Player
+        Player making move.
+    """
+    print('Enter coordinates to place a piece:')
     coords = coords_input()
     try:
         point = board.get_point(coords)
@@ -106,6 +114,7 @@ def place_piece(board, player):
 
 
 def coords_input():
+    """Get coordinates from user."""
     try:
         pointrow = input("row:")
         while not pointrow.isdigit():
@@ -121,6 +130,17 @@ def coords_input():
 
 
 def move_piece(board, player, fly=False):
+    """Move piece on the board.
+
+    Parameters
+    ----------
+    board : Board
+        Board of current game.
+    player : Player
+        Player who is making move.
+    fly : bool, optional
+        True if game phase is flying (default is False).
+    """
     moved = False
     start_p = False
     while not start_p:
@@ -179,6 +199,15 @@ def move_piece(board, player, fly=False):
 
 
 def remove_piece(board, player):
+    """Get from user an opponent's piece to remove and remove it.
+
+    Parameters
+    ----------
+    board : Board
+        Board of current game
+    player : Player
+        Player who is removing pieces.
+    """
     clear()
     print(board)
     print("YOU HAVE A MILL CONGRATULATIONS")

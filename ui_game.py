@@ -4,8 +4,15 @@ import os
 from classes.cli import pick_ai_mode, pick_player, make_move, remove_piece, pick_mode
 
 
+def clear():
+    return os.system('clear')
+
+
 def main():
-    def clear(): return os.system('clear')
+    """Main game function.
+
+    Creates game and loops until game is won.
+    """
     clear()
     game_mode = pick_mode()
     ai = pick_ai_mode()

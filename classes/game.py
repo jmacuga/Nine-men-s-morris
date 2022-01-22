@@ -5,48 +5,40 @@ from classes.point_generate import generate_points
 
 
 class Game:
-    """class representing state of game
+    """
+    Class representing state of the game.
 
     Attributes:
     ----------
-    points_list
-        list of active points passed to the board
-    ai
-        true if gameplay is in ai mode(default=False)
-    sumbol
-        symbol of human player on the board(default=None)
-    win
-        true if game is won
-    phase
-        current game phase [Placing pieces, Moving, Flying]
-
-    Methods
-    -------
-    get_computer_player()
-        generates computer player if game is in ai mode
-    board()
-    win()
-    pahse()
-    set_phase()
-    players()
-    check_if_phase_moving()
-        returns true if hase is moving
-    check_if_phase_flying()
-        returns true if hase is flying
-    check_mills(players)
-        returns true if one of the players has a mill
-        and is able to remove opponrnt's piece
-    opponent_rmeovable(player)
-        returns true if player is able ot remove opponent's piece
-    check_phase()
-        checks phase and sets game to next phase
-    check_win()
-        sets win to true if game if won
-    reveal_winner()
-        returns winner player, if there is a draw returns None
+    points_list : list
+        List of active points passed to the board.
+    sumbol : str
+        Symbol of human player on the board (default is None).
+    fly : bool
+        True if current game mode fly phase is permited.
+    board : Board
+        Board of current game.
+    player1 : Player
+        Player with symbol 'o'.
+    player2 : Player
+        Player with symbol 'x'.
+    win : bool
+        True if game is won.
+    phase : str
+        Current game phase [Placing pieces, Moving, Flying].
     """
 
     def __init__(self, mode_number, ai=False, symbol=None):
+        """
+        Parameters
+        ----------
+        mode_number : int
+            Game mode depending on board size.
+        ai : bool, optional
+            True if gameplay is in ai mode (default is False).
+        sumbol : str, optional
+            Symbol of human player on the board (default is None).
+        """
         points_list = generate_points(mode_number)
         modes = {1: (False, Board(3, 3, points_list)),
                  2: (False, Board(6, 5, points_list)),
@@ -85,6 +77,7 @@ class Game:
         return [self.player1, self.player2]
 
     def check_if_phase_moving(self):
+        """Check if current phase is moving."""
         pieces_num = self.board().pieces_num()
         placed1 = self.player1.placed_num()
         placed2 = self.player2.placed_num()
@@ -94,6 +87,7 @@ class Game:
             return False
 
     def check_if_phase_flying(self):
+        """Check if current phase is moving."""
         for player in self.players():
             if len(player.occupied()) == 3:
                 return True
@@ -101,6 +95,13 @@ class Game:
             return False
 
     def check_mills(self, player):
+        """Check if player can remove opponents piece as a result of creating mill.
+
+        Parameters
+        ----------
+        player : Player
+            Player whose pieces are being checked.
+        """
         player.find_mills()
         if player.is_mill():
             if self.board().pieces_num() == 3:
@@ -111,6 +112,13 @@ class Game:
                 return True
 
     def opponent_removable(self, player):
+        """Check if the player can remove any of opponent's pieces.
+
+        Parameters
+        ----------
+            player : Player
+        Player whose opponent's pieces are being checked.
+        """
         if player == self.player1:
             other_player = self.player2
         else:
@@ -123,6 +131,7 @@ class Game:
         return False
 
     def check_phase(self):
+        """Check if phase has changed and set a new one."""
         if self._phase == "Placing Pieces":
             if self.check_if_phase_moving():
                 self.set_phase("Moving")
@@ -131,6 +140,7 @@ class Game:
                 self.set_phase("Flying")
 
     def check_win(self):
+        """Check if game is won."""
         if self.board().pieces_num() == 3:
             for player in self.players():
                 if player.is_mill():
@@ -143,6 +153,12 @@ class Game:
                 self._win = True
 
     def reveal_winner(self):
+        """Return player who won.
+
+        If game ended as a result of blocking one of the players,
+        the player who has more pieces on the board is the winner.
+        If there is a draw return None.
+        """
         if len(self.player2.occupied()) == len(self.player1.occupied()):
             if self.board().pieces_num() == 3:
                 for player in self.players():

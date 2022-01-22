@@ -3,43 +3,29 @@ from classes.exceptions import ImpossibleMove, PointInMillError, PointOccupiedEr
 
 class Player:
     """
-    class representing player
+    Class representing player.
 
     Attributtes
     ----------
     id : int
+        Players id.
     occupied : list
-        list of players pieces as occupied points on board
+        List of players pieces as occupied points on board.
     mills_list : list
-        list of lists of points in one mill
+        List of lists of points in one mill.
     is_mill : bool
-        true if recent move provided a mill
+        Rrue if recent move provided a mill.
     placed_num : int
-        number of placed pieces
-
-    Methods
-    -------
-
-    id
-    occupied
-    mills_list
-    is_mill
-    placed_num
-    place_piece(point)
-        places piece on given point
-    move_piece(point1, point2)
-        moves piece from point1 to point2
-    remove_oppponents_piece(point)
-        removes piece from given point
-    find_mills
-        finds mills in occupied points and adds them to mills_list
-    possible_moves(board)
-        returns possible moves of the occupied points
-    possible_fly_moves(board)
-        returns possible moves of the occupied points in flying phase
+        Number of placed pieces.
     """
 
     def __init__(self, id: int):
+        """
+        Parameters
+        ----------
+        id : int
+            Players id.
+        """
         self._id = id
         self._occupied = []
         self._mills_list = []
@@ -67,9 +53,17 @@ class Player:
         self._placed_num += 1
 
     def move_piece(self, point1, point2, fly=False):
-        # chceck if a point belongs to player,
-        # if a move is possible
-        # move point
+        """Move players piece.
+
+        Parameters
+        ----------
+        point1 : Point
+            Mooving piece.
+        point2 : Point
+            Destinatinon point.
+        fly : bool, optional
+            True if move is in flying phase (default is False).
+        """
         if point1.owner() != self:
             raise ImpossibleMove()
         elif point2.owner():
@@ -89,7 +83,7 @@ class Player:
             point.remove_owner()
 
     def find_mills(self):
-        """finds all players mills, locks points and appends to mills_list."""
+        """Finds all players mills, locks points and appends to mills_list."""
         mills = []
         for point1 in self.occupied():
             connect_list = [point2 for point2 in self.occupied()
@@ -110,6 +104,13 @@ class Player:
         self._mills_list = mills
 
     def possible_moves(self, board) -> list:
+        """Get players possible moves.
+
+        Parameters
+        ----------
+        board : Board
+            Board of current game.
+        """
         moves = []
         for point in self.occupied():
             for nextpoint in board.points_list():

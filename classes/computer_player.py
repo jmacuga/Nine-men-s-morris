@@ -2,31 +2,29 @@ from classes.player import Player
 from random import choice
 
 class ComputerPlayer(Player):
+    """
+    Class representig a computer player.
+
+    Inherits from Player.
+    """
     def __init__(self, id):
         super().__init__(id)
 
-    def random_place_piece(self, board):
-        posbl_points = [point for point in board.points_list()
-                        if not point.owner()]
-        point = choice(posbl_points)
-        self.place_piece(point)
-
-    def random_move(self, board, fly=False):
-        if fly:
-            point1, point2 = choice(self.possible_fly_moves(board))
-            self.move_piece(point1, point2, True)
-        else:
-            point1, point2 = choice(self.possible_moves(board))
-            self.move_piece(point1, point2)
-
-
     def get_remove_point(self, board):
+        """Get a random oppontent's piece to remove.
+
+        Parameters
+        ----------
+        board : Board
+            Board of current game.
+        """
         posbl_remove = [point for point in board.points_list()
                         if point.owner() and not point.owner() == self and not point.locked()]
         piece = choice(posbl_remove)
         return piece
 
     def score(self, game, human):
+        """Get score of minimax branch."""
         if self.is_mill():
             return +10
         if human.is_mill():
@@ -42,7 +40,8 @@ class ComputerPlayer(Player):
             return 0
 
     def best_move(self, game, board, human):
-        best_score = -2000
+        """Get best move depending of game phase."""
+        best_score = -1000
         alpha = -1000
         beta = 1000
         if game.phase() == "Placing Pieces":
@@ -80,13 +79,53 @@ class ComputerPlayer(Player):
                     best_point2 = point2
             self.move_piece(best_point1, best_point2)
 
-    def minimax(self, game, human,  depth, alpha, beta, maximizing, fly=False):
+    def minimax(self, game, human,  depth, alpha, beta, maximizing: bool, fly: bool=False):
+        """Pick minimax algorithm depending on current game phase.
+
+        Makes it possible to change phases during searching for best move.
+
+        Parameters
+        ----------
+        game : Game
+            Current game.
+        human : Player
+            Human player.
+        depth : int
+            Current search depth.
+        alpha : int
+            Current alpha value.
+        beta : int
+            Current beta value.
+        maximizing : bool
+            True if player is the computer.
+        fly : bool, optional
+            True if current game phase is flying.
+        """
         if game._phase == "Placing Pieces":
             return self.minimax_phase1(game, human, depth, alpha, beta, maximizing)
         else:
             return self.minimax_phase2(game, human, depth, alpha, beta, maximizing, fly)
 
     def minimax_phase1(self, game, human, depth, alpha, beta, maximizing):
+        """Get minimax value in phase Placing Pieces.
+
+        Place piece and recursively get minimax value on every possible point.
+
+        Parameters
+        ----------
+        game : Game
+            Current game.
+        human : Player
+            Human player.
+        depth : int
+            Current search depth.
+        alpha : int
+            Current alpha value.
+        beta : int
+            Current beta value.
+        maximizing : bool
+            True if player is the computer.
+        """
         game.check_win()
         if game.win() or human.is_mill() or self.is_mill() or not depth:
             return self.score(game, human)
@@ -119,6 +158,28 @@ class ComputerPlayer(Player):
         return best_score
 
     def minimax_phase2(self, game, human, depth, alpha, beta, maximizing, fly=False):
+        """Get minimax value in phase Moving and Flying.
+
+        Move or fly a piece and recursively get miniamx value
+        on every possible point.
+
+        Parameters
+        ----------
+        game : Game
+            Current game.
+        human : Player
+            Human player.
+        depth : int
+            Current search depth.
+        alpha : int
+            Current alpha value.
+        beta : int
+            Current beta value.
+        maximizing : bool
+            True if player is the computer.
+        fly : bool, optional
+            True if current game phase is flying.
+        """
         game.check_win()
         if game.win() or human.is_mill() or self.is_mill() or not depth:
             return self.score(game, human)
