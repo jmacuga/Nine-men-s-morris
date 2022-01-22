@@ -1,6 +1,7 @@
 from classes.player import Player
 from random import choice
 
+
 class ComputerPlayer(Player):
     """
     Class representig a computer player.
@@ -44,6 +45,7 @@ class ComputerPlayer(Player):
         best_score = -1000
         alpha = -1000
         beta = 1000
+        depth = 4
         if game.phase() == "Placing Pieces":
             posbl_points = [point for point in board.points_list()
                             if not point.owner()]
@@ -51,7 +53,7 @@ class ComputerPlayer(Player):
                 self.place_piece(point)
                 self.find_mills()
                 game.check_phase()
-                score = self.minimax_phase1(game, human, 5, alpha, beta, False)
+                score = self.minimax_phase1(game, human, depth, alpha, beta, False)
                 point.remove_owner()
                 self._placed_num -= 1
                 self.find_mills()
@@ -67,7 +69,8 @@ class ComputerPlayer(Player):
             for point1, point2 in self.possible_moves(game.board()):
                 self.move_piece(point1, point2, fly)
                 self.find_mills()
-                score = self.minimax_phase2(game, human, 5, alpha, beta, True, fly)
+                score = self.minimax_phase2(
+                    game, human, depth, alpha, beta, True, fly)
                 self.move_piece(point2, point1, fly)
                 self.find_mills()
                 self._placed_num -= 2
@@ -130,10 +133,8 @@ class ComputerPlayer(Player):
         if game.win() or human.is_mill() or self.is_mill() or not depth:
             return self.score(game, human)
         if maximizing:
-            best_score = -2000
             player = self
         else:
-            best_score = 2000
             player = human
         posbl_points = [point for point in game.board().points_list()
                         if not point.owner()]
@@ -141,21 +142,20 @@ class ComputerPlayer(Player):
             player.place_piece(point)
             player.find_mills()
             game.check_phase()
-            score = self.minimax(game, human, depth - 1, alpha, beta, not maximizing)
+            score = self.minimax(game, human, depth - 1,
+                                 alpha, beta, not maximizing)
             player._placed_num -= 1
             point.remove_owner()
             player.find_mills()
             game.set_phase("Placing Pieces")
             game._win = False
             if maximizing:
-                best_score = max(score, best_score)
                 alpha = max(alpha, score)
             else:
-                best_score = min(score, best_score)
                 beta = min(beta, score)
             if beta <= alpha:
                 break
-        return best_score
+        return alpha if maximizing else beta
 
     def minimax_phase2(self, game, human, depth, alpha, beta, maximizing, fly=False):
         """Get minimax value in phase Moving and Flying.
@@ -184,10 +184,8 @@ class ComputerPlayer(Player):
         if game.win() or human.is_mill() or self.is_mill() or not depth:
             return self.score(game, human)
         if maximizing:
-            best_score = -2000
             player = self
         else:
-            best_score = 2000
             player = human
         if fly:
             posbl_moves = player.possible_fly_moves(game.board())
@@ -196,17 +194,16 @@ class ComputerPlayer(Player):
         for point1, point2 in posbl_moves:
             player.move_piece(point1, point2, fly)
             player.find_mills()
-            score = self.minimax(game, human, depth - 1, alpha, beta, not maximizing)
+            score = self.minimax(game, human, depth - 1,
+                                 alpha, beta, not maximizing)
             player.move_piece(point2, point1, fly)
             player.find_mills()
             player._placed_num -= 2
             game._win = False
             if maximizing:
-                best_score = max(score, best_score)
                 alpha = max(alpha, score)
             else:
-                best_score = min(score, best_score)
                 beta = min(beta, score)
             if beta <= alpha:
                 break
-        return best_score
+        return alpha if maximizing else beta
