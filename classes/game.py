@@ -152,7 +152,7 @@ class Game:
                     self._win = True
         if self.board().pieces_num() == 12:
             full = True
-            for point in self.board.points_list():
+            for point in self.board().points_list():
                 if not point.owner():
                     full = False
                     break
