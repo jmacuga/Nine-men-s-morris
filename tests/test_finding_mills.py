@@ -1,5 +1,3 @@
-# import sys
-# sys.path.append('../')
 from classes.game import Game
 import pytest
 from classes.player import Player
@@ -9,11 +7,11 @@ from classes.exceptions import PointInMillError
 def test_find_mils():
     game = Game(4)
     board = game.board()
+    player1 = Player(1)
     point00 = board.get_point((0, 0))
     point11 = board.get_point((1, 1))
     point03 = board.get_point((0, 3))
     point06 = board.get_point((0, 6))
-    player1 = Player(1)
     player1.place_piece(point00)
     player1.place_piece(point11)
     player1.place_piece(point03)
@@ -51,20 +49,12 @@ def test_find_mills():
 
 def test_find_mills_eq_2():
     game = Game(4)
-    board = game.board()
-    point53 = board.get_point((5, 3))
-    point51 = board.get_point((5, 1))
-    point55 = board.get_point((5, 5))
-    point43 = board.get_point((4, 3))
-    point44 = board.get_point((4, 4))
-    point63 = board.get_point((6, 3))
     player1 = Player(1)
-    player1.place_piece(point51)
-    player1.place_piece(point53)
-    player1.place_piece(point55)
-    player1.place_piece(point43)
-    player1.place_piece(point44)
-    player1.place_piece(point63)
+    board = game.board()
+    coords = [(5, 3), (5, 1), (5, 5), (4, 3), (4, 4), (6, 3)]
+    points = list(map(board.get_point, coords))
+    list(map(player1.place_piece, points))
+
     player1.find_mills()
     mills = player1.mills_list()
     assert len(mills) == 2
@@ -73,15 +63,10 @@ def test_find_mills_eq_2():
 def test_find_mills_middle_case():
     game = Game(4)
     board = game.board()
-    point30 = board.get_point((3, 0))
-    point32 = board.get_point((3, 2))
-    point34 = board.get_point((3, 4))
-    point22 = board.get_point((2, 2))
     player = Player(1)
-    player.place_piece(point30)
-    player.place_piece(point32)
-    player.place_piece(point34)
-    player.place_piece(point22)
+    coords = [(3, 0), (3, 2), (3, 4), (2, 2)]
+    points = list(map(board.get_point, coords))
+    list(map(player.place_piece, points))
     mills = player.mills_list()
     assert mills == []
 
@@ -175,9 +160,7 @@ def test_checking_last_mill_2():
     point03 = board.get_point((0, 3))
     point06 = board.get_point((0, 6))
     point30 = board.get_point((3, 0))
-    point55 = board.get_point((5, 5))
     player1 = Player(1)
-    player2 = Player(2)
     assert player1.is_mill() == False
     player1.place_piece(point00)
     player1.place_piece(point11)
@@ -193,21 +176,15 @@ def test_checking_last_mill_2():
 def test_3_mode():
     game = Game(1)
     board = game.board()
-    point00 = board.get_point((0, 0))
-    point10 = board.get_point((1, 0))
-    point20 = board.get_point((2, 0))
-    point02 = board.get_point((0, 2))
-    point12 = board.get_point((1, 2))
-    point22 = board.get_point((2, 2))
+    coords1 = [(0, 0), (2, 0), (2, 2)]
+    coords2 = [(1, 0), (0, 2), (1, 2)]
     player1 = Player(1)
     player2 = Player(2)
+    points1 = list(map(board.get_point, coords1))
+    points2 = list(map(board.get_point, coords2))
+    list(map(player1.place_piece, points1))
+    list(map(player2.place_piece, points2))
     assert player1.is_mill() == False
-    player1.place_piece(point00)
-    player1.place_piece(point20)
-    player1.place_piece(point22)
-    player2.place_piece(point10)
-    player2.place_piece(point02)
-    player2.place_piece(point12)
     player1.find_mills()
     player2.find_mills()
     assert player1.is_mill() == False

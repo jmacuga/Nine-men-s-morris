@@ -1,6 +1,5 @@
-from classes.cli import pick_ai_mode, pick_mode, pick_player, place_piece, move_piece, make_move, coords_input, remove_piece
+from classes.cli import pick_mode, pick_player, place_piece, move_piece, make_move, coords_input, remove_piece
 from classes.game import Game
-import pytest
 
 
 def test_pick_mode(monkeypatch):
@@ -19,12 +18,6 @@ def test_pick_mode_float(monkeypatch):
     inputs = iter(['3.5', '2'])
     monkeypatch.setattr('builtins.input', lambda _: next(inputs))
     assert pick_mode() == 2
-
-
-def test_pick_ai_mode(monkeypatch):
-    inputs = iter(['e', '2', '%', '1', 'x', 'Y'])
-    monkeypatch.setattr('builtins.input', lambda _: next(inputs))
-    pick_ai_mode()
 
 
 def test_pick_player(monkeypatch):

@@ -1,5 +1,3 @@
-
-
 from classes.game import Game
 import pytest
 from classes.player import Player
