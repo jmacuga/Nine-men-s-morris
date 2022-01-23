@@ -8,6 +8,7 @@ class ComputerPlayer(Player):
 
     Inherits from Player.
     """
+
     def __init__(self, id):
         super().__init__(id)
 
@@ -53,7 +54,8 @@ class ComputerPlayer(Player):
                 self.place_piece(point)
                 self.find_mills()
                 game.check_phase()
-                score = self.minimax_phase1(game, human, depth, alpha, beta, False)
+                score = self.minimax_phase1(
+                    game, human, depth, alpha, beta, False)
                 point.remove_owner()
                 self._placed_num -= 1
                 self.find_mills()
@@ -82,7 +84,7 @@ class ComputerPlayer(Player):
                     best_point2 = point2
             self.move_piece(best_point1, best_point2)
 
-    def minimax(self, game, human,  depth, alpha, beta, maximizing: bool, fly: bool=False):
+    def minimax(self, game, human,  depth, alpha, beta, maximizing: bool, fly: bool = False):
         """Pick minimax algorithm depending on current game phase.
 
         Makes it possible to change phases during searching for best move.
