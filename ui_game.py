@@ -7,7 +7,6 @@ from classes.cli import pick_ai_mode, pick_player, make_move, remove_piece, pick
 def clear():
     return os.system('clear')
 
-
 def main():
     """Main game function.
 
@@ -27,7 +26,6 @@ def main():
     while not game.win():
         for player in game.players():
             clear()
-            game.check_phase()
             print(f'Phase: {game.phase()}')
             if type(player) == ComputerPlayer:
                 print("Thinking... ")
@@ -36,6 +34,7 @@ def main():
                 make_move(game, board, player)
             if game.check_mills(player):
                 remove_piece(board, player)
+            game.check_phase()
             game.check_win()
             if game.win():
                 break
