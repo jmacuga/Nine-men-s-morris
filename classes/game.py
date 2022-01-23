@@ -140,17 +140,30 @@ class Game:
                 self.set_phase("Flying")
 
     def check_win(self):
-        """Check if game is won."""
+        """Check if game is won.
+
+        Set self._win to True if one of the players has 2 pieces left.
+        In mode 2 if one of the payers made a mill. In mode 4 if board is full.
+        In phase moving game is won if one of the players doesn't have possible moves.
+        """
         if self.board().pieces_num() == 3:
             for player in self.players():
                 if player.is_mill():
                     self._win = True
+        if self.board().pieces_num() == 12:
+            full = True
+            for point in self.board.points_list():
+                if not point.owner():
+                    full = False
+                    break
+            if full:
+                self._win == True
         for player in self.players():
             if not self._phase == "Placing Pieces":
                 if len(player.occupied()) == 2:
                     self._win = True
-            if not player.possible_moves(self.board()) and player.placed_num():
-                self._win = True
+                if not player.possible_moves(self.board()):
+                    self._win = True
 
     def reveal_winner(self):
         """Return player who won.
