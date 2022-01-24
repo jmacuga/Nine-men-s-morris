@@ -48,17 +48,26 @@ class Player:
         return self._placed_num
 
     def place_piece(self, point):
+        """
+        Place piece on given point.
+
+        Parameters
+        ----------
+        point : Point
+            Point to place a piece.
+        """
         point.set_owner(self)
         self._occupied.append(point)
         self._placed_num += 1
 
     def move_piece(self, point1, point2, fly=False):
-        """Move players piece.
+        """
+        Move players piece.
 
         Parameters
         ----------
         point1 : Point
-            Mooving piece.
+            Moving piece.
         point2 : Point
             Destinatinon point.
         fly : bool, optional
@@ -75,6 +84,14 @@ class Player:
             self.place_piece(point2)
 
     def remove_opponents_piece(self, point):
+        """
+        Remove opponent's piece from given point.
+
+        Parameters
+        ----------
+        point : Point
+            Piece to remove.
+        """
         if point in self.occupied():
             raise PointOwnerError()
         if point.locked():
@@ -104,7 +121,8 @@ class Player:
         self._mills_list = mills
 
     def possible_moves(self, board) -> list:
-        """Get players possible moves.
+        """
+        Get players possible moves.
 
         Parameters
         ----------
@@ -119,6 +137,14 @@ class Player:
         return moves
 
     def possible_fly_moves(self, board) -> list:
+        """
+        Get players possible fly moves.
+
+        Parameters
+        ----------
+        board : Board
+            Board of current game.
+        """
         fly_moves = []
         for point in self.occupied():
             for nextpoint in board.points_list():
