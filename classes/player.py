@@ -14,7 +14,7 @@ class Player:
     mills_list : list
         List of lists of points in one mill.
     is_mill : bool
-        Rrue if recent move provided a mill.
+        True if recent move provided a mill.
     placed_num : int
         Number of placed pieces.
     """
@@ -100,7 +100,7 @@ class Player:
             point.remove_owner()
 
     def find_mills(self):
-        """Finds all players mills, locks points and appends to mills_list."""
+        """Find all player's mills, lock points and append to mills_list."""
         mills = []
         for point1 in self.occupied():
             connect_list = [point2 for point2 in self.occupied()
@@ -122,7 +122,7 @@ class Player:
 
     def possible_moves(self, board) -> list:
         """
-        Get players possible moves.
+        Get player's possible moves.
 
         Parameters
         ----------
@@ -138,7 +138,7 @@ class Player:
 
     def possible_fly_moves(self, board) -> list:
         """
-        Get players possible fly moves.
+        Get player's possible fly moves.
 
         Parameters
         ----------

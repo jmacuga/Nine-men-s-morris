@@ -118,8 +118,8 @@ class Game:
 
         Parameters
         ----------
-            player : Player
-        Player whose opponent's pieces are being checked.
+        player : Player
+            Player whose opponent's pieces are being checked.
         """
         if player == self.player1:
             other_player = self.player2
