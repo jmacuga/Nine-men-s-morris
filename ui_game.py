@@ -8,7 +8,8 @@ def clear():
     return os.system('clear')
 
 def main():
-    """Main game function.
+    """
+    Main game function.
 
     Creates game and loops until game is won.
     """

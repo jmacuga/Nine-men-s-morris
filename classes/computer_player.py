@@ -13,7 +13,8 @@ class ComputerPlayer(Player):
         super().__init__(id)
 
     def get_remove_point(self, board):
-        """Get a random oppontent's piece to remove.
+        """
+        Get a random oppontent's piece to remove.
 
         Parameters
         ----------
@@ -85,7 +86,8 @@ class ComputerPlayer(Player):
             self.move_piece(best_point1, best_point2)
 
     def minimax(self, game, human,  depth, alpha, beta, maximizing: bool, fly: bool = False):
-        """Pick minimax algorithm depending on current game phase.
+        """
+        Pick minimax algorithm depending on current game phase.
 
         Makes it possible to change phases during searching for best move.
 
@@ -112,7 +114,8 @@ class ComputerPlayer(Player):
             return self.minimax_phase2(game, human, depth, alpha, beta, maximizing, fly)
 
     def minimax_phase1(self, game, human, depth, alpha, beta, maximizing):
-        """Get minimax value in phase Placing Pieces.
+        """
+        Get minimax value in phase Placing Pieces.
 
         Place piece and recursively get minimax value on every possible point.
 
@@ -160,7 +163,8 @@ class ComputerPlayer(Player):
         return alpha if maximizing else beta
 
     def minimax_phase2(self, game, human, depth, alpha, beta, maximizing, fly=False):
-        """Get minimax value in phase Moving and Flying.
+        """
+        Get minimax value in phase Moving and Flying.
 
         Move or fly a piece and recursively get miniamx value
         on every possible point.

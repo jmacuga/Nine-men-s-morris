@@ -35,7 +35,7 @@ def pick_mode():
 
 
 def pick_ai_mode():
-    """Get ai mode activation fro user."""
+    """Get ai mode activation from user."""
     yes_answers = ['y', 'yes']
     no_answers = ['n', 'no']
     print('Do you want to play with computer?[Y/N]')
@@ -96,7 +96,7 @@ def place_piece(board, player):
     player : Player
         Player making move.
     """
-    print('Enter coordinates to place a piece:')
+    print('Enter coordinates to place a piece:\n')
     coords = coords_input()
     try:
         point = board.get_point(coords)
@@ -104,12 +104,12 @@ def place_piece(board, player):
     except CoordsOfNotActivePoint:
         clear()
         print(board)
-        print("This point is not an active point.")
+        print("This point is not an active point.\n")
         place_piece(board, player)
     except PointOccupiedError:
         clear()
         print(board)
-        print('This point is already occupied. Pick another one.')
+        print('This point is already occupied. Pick another one.\n')
         place_piece(board, player)
 
 
@@ -146,19 +146,19 @@ def move_piece(board, player, fly=False):
     while not start_p:
         try:
             if fly:
-                print('Enter coordinates to pick a piece you want to fly:')
+                print('Enter coordinates to pick a piece you want to fly:\n')
             else:
-                print('Enter coordinates to pick a piece you want to move:')
+                print('Enter coordinates to pick a piece you want to move:\n')
             coords1 = coords_input()
             point1 = board.get_point(coords1)
             if point1 not in player.occupied():
                 clear()
                 print(board)
                 raise ImpossibleMove(
-                    "This point doesn't belong to you. Pick another one.")
+                    "This point doesn't belong to you. Pick another one.\n")
             elif point1.is_blocked(board) and not fly:
                 raise ImpossibleMove(
-                    "This point is blocked. Pick another one.")
+                    "This point is blocked. Pick another one.\n")
             start_p = True
         except ImpossibleMove as e:
             clear()
@@ -168,11 +168,11 @@ def move_piece(board, player, fly=False):
         except CoordsOfNotActivePoint:
             clear()
             print(board)
-            print("This point is not an active point.")
+            print("This point is not an active point.\n")
             continue
     while not moved:
         try:
-            print("Enter coordinates of destination point:")
+            print("Enter coordinates of destination point:\n")
             coords2 = coords_input()
             point2 = board.get_point(coords2)
             player.move_piece(point1, point2, fly)
@@ -180,17 +180,17 @@ def move_piece(board, player, fly=False):
         except ImpossibleMove:
             clear()
             print(board)
-            print("These points are not connected.")
+            print("These points are not connected.\n")
             continue
         except PointOccupiedError:
             clear()
             print(board)
-            print('This point is already occupied. Pick another one.')
+            print('This point is already occupied. Pick another one.\n')
             continue
         except CoordsOfNotActivePoint:
             clear()
             print(board)
-            print("This point is not an active point.")
+            print("This point is not an active point.\n")
             continue
         except Exception:
             clear()
@@ -210,20 +210,20 @@ def remove_piece(board, player):
     """
     clear()
     print(board)
-    print("YOU HAVE A MILL CONGRATULATIONS")
+    print("YOU HAVE A MILL CONGRATULATIONS!!!")
     removed = False
     while not removed:
         try:
             if type(player) == ComputerPlayer:
                 point = player.get_remove_point(board)
             else:
-                print("pick oponnents piece to remove:")
+                print("Pick opponent's piece to remove:\n")
                 coords = coords_input()
                 point = board.get_point(coords)
         except CoordsOfNotActivePoint:
             clear()
             print(board)
-            print("This point is not an active point.")
+            print("This point is not an active point.\n")
             continue
         try:
             player.remove_opponents_piece(point)
@@ -231,15 +231,15 @@ def remove_piece(board, player):
         except PointOwnerError:
             clear()
             print(board)
-            print("You can only remove an oponent's piece")
+            print("You can only remove an oponent's piece.\n")
             continue
         except PointInMillError:
             clear()
             print(board)
-            print("This point is in mill")
+            print("This point is in mill.\n")
             continue
         except FreePointError:
             clear()
             print(board)
-            print("There is no piece to remove from this point")
+            print("There is no piece to remove from this point.\n")
             continue

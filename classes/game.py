@@ -95,7 +95,8 @@ class Game:
             return False
 
     def check_mills(self, player):
-        """Check if player can remove opponents piece as a result of creating mill.
+        """
+        Check if player can remove opponents piece as a result of creating mill.
 
         Parameters
         ----------
@@ -112,7 +113,8 @@ class Game:
                 return True
 
     def opponent_removable(self, player):
-        """Check if the player can remove any of opponent's pieces.
+        """
+        Check if the player can remove any of opponent's pieces.
 
         Parameters
         ----------
@@ -140,11 +142,13 @@ class Game:
                 self.set_phase("Flying")
 
     def check_win(self):
-        """Check if game is won.
+        """
+        Check if game is won.
 
         Set self._win to True if one of the players has 2 pieces left.
-        In mode 2 if one of the payers made a mill. In mode 4 if board is full.
-        In phase moving game is won if one of the players doesn't have possible moves.
+        In mode 1 if one of the payers made a mill. In mode 4 if board
+        is full. In phase moving game is won if one of the players
+        doesn't have possible moves.
         """
         if self.board().pieces_num() == 3:
             for player in self.players():
@@ -166,7 +170,8 @@ class Game:
                     self._win = True
 
     def reveal_winner(self):
-        """Return player who won.
+        """
+        Return player who won.
 
         If game ended as a result of blocking one of the players,
         the player who has more pieces on the board is the winner.

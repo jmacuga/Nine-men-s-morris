@@ -3,7 +3,8 @@ from classes.point import Point
 
 
 def generate_points(mode: int) -> list:
-    """Generate active points list on given board.
+    """
+    Generate active points list on given board.
 
     Load coordinates from file and return list.
 
