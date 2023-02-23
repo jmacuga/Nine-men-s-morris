@@ -20,16 +20,14 @@ The computer player checks possible future moves and predicts the optimal move u
 ## Gameplay screenshots
 Start Menu:
 
-![](img/menu_start.png)
+<img src="img/menu_start.png" width="284" height = "200"/>
 
 Three Men's Morris board:
 
-![](img/three_mills.png)
+<img src="img/three_mills.png" width="350" height = "350"/>
 
 Six Men's Morris board:
-
-![](img/six_mills.png)
+<img src="img/six_mills.png" width="350" height = "350"/>
 
 Players symbols:
-
-![](img/player_symbols.png)
+<img src="img/player_symbols.png" width="350" height = "350"/>
