@@ -27,7 +27,9 @@ Three Men's Morris board:
 <img src="img/three_mills.png" width="300" height = "300"/>
 
 Six Men's Morris board:
+
 <img src="img/six_mills.png" width="300" height = "300"/>
 
 Players symbols:
+
 <img src="img/player_symbols.png" width="300" height = "300"/>
